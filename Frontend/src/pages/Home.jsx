@@ -3,8 +3,20 @@ import { RiExchangeFundsFill } from "react-icons/ri";
 import { TbTruckReturn } from "react-icons/tb";
 import { RiCustomerServiceLine } from "react-icons/ri";
 import { Subscribe } from "../components/Subscribe";
+import { useSelector, useDispatch } from "react-redux"
+import { useEffect } from "react"
+import { fetchProducts } from "../redux/productSlice.js"
 
 export const Home = () => {
+
+    const { products, loading } = useSelector(state => state.product)
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(fetchProducts())
+    }, [])
+
     return (
         <Wrapper>
             <div>
@@ -23,16 +35,40 @@ export const Home = () => {
                 <div className="flex flex-col items-center ">
                     <h1 className="text-gray-700 text-3xl text-center pt-12 pb-6 ">LATEST <span className="text-black">COLLECTIONS _____</span></h1>
                     <p className="px-30">Discover our latest collections featuring trendy designs and high-quality materials. Stay ahead in fashion with our new arrivals that blend style and comfort seamlessly.</p>
-                    <div className="py-10">
-                        images
+                    <div className="py-10 grid grid-cols-4 gap-4">
+                        {products
+                            .slice()
+                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                            .slice(0, 8) // show latest 8 products
+                            .map((product) => {
+                                return (
+                                    <div key={product._id} className="shadow-xl p-5 flex flex-col gap-2 rounded-sm">
+                                        <img className="h-[300px] " src={product.images[0]} />
+                                        <h1>Price: ${product.price}</h1>
+                                        <h1 className="font-semibold">{product.productName}</h1>
+
+                                    </div>
+                                )
+                            })}
                     </div>
                 </div>
                 <div>
                     <h1 className="text-gray-700 text-3xl text-center pt-12 pb-6 ">BEST <span className="text-black">SELLER _____</span></h1>
                     <p className="px-30">Our most loved pieces, chosen by customers for their quality, comfort,
                         and timeless style. Shop what everyone’s talking about.</p>
-                    <div className="py-10">
-                        images
+                    <div className="py-10 grid grid-cols-4 gap-4">
+                        {
+                            products.filter((product) => product.bestseller === true).map((product) => {
+                                return (
+                                    <div key={product._id} className="shadow-xl p-5 flex flex-col gap-2 rounded-sm">
+                                        <img className="h-[300px] " src={product.images[0]} />
+                                        <h1>Price: ${product.price}</h1>
+                                        <h1 className="font-semibold">{product.productName}</h1>
+
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
                 <div className="py-20 flex justify-between">

@@ -96,7 +96,7 @@ export const AdminAddItems = () => {
         setLoading(false)
 
         setProductDetails({
-            productName: "",
+            productName: " ",
             description: "",
             price: "",
             category: "",

@@ -1,6 +1,60 @@
 import { Wrapper } from "../components/Wrapper"
+import { useSelector, useDispatch } from "react-redux"
+import { useEffect, useState } from "react"
+import { fetchProducts } from "../redux/productSlice.js"
+
 
 export const Collection = () => {
+
+    const { products, loading } = useSelector(state => state.product)
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(fetchProducts())
+    }, [])
+
+    const [filters, setFilters] = useState({
+        men: false,
+        women: false,
+        kids: false,
+        topwear: false,
+        bottomwear: false,
+        winterwear: false,
+    });
+
+
+    const handleChange = (e) => {
+        const { name, checked } = e.target
+        setFilters((prev) => ({
+            ...prev,
+            [name]: checked
+        }))
+    }
+
+    const filteredProducts = products.filter(product => {
+
+        const categorySelected =
+            filters.men || filters.women || filters.kids;
+
+        const subCategorySelected =
+            filters.topwear || filters.bottomwear || filters.winterwear;
+
+        const categoryKey = product.category?.toLowerCase();
+        const subCategoryKey = product.subCategory?.toLowerCase();
+
+        const categoryMatch = categorySelected
+            ? filters[categoryKey]
+            : true;
+
+        const subCategoryMatch = subCategorySelected
+            ? filters[subCategoryKey]
+            : true;
+
+
+        return categoryMatch && subCategoryMatch;
+    });
+
     return (
         <Wrapper>
             <div className="flex  gap-10">
@@ -12,15 +66,15 @@ export const Collection = () => {
                         <h1 className="font-semibold py-2">CATEGORIES</h1>
                         <div className="flex flex-col  gap-2 ">
                             <label className="flex gap-2">
-                                <input type="checkbox" />
+                                <input onChange={handleChange} type="checkbox" name="men" checked={filters.men}/>
                                 Men
                             </label>
                             <label className="flex gap-2">
-                                <input type="checkbox" />
+                                <input onChange={handleChange} type="checkbox" name="women" checked={filters.women}/>
                                 Women
                             </label>
                             <label className="flex gap-2">
-                                <input type="checkbox" />
+                                <input onChange={handleChange} type="checkbox" name="kids" checked={filters.kids} />
                                 Kids
                             </label>
                         </div>
@@ -29,18 +83,28 @@ export const Collection = () => {
                         <h1 className="font-semibold py-2">TYPE</h1>
                         <div className="flex flex-col  gap-2 ">
                             <label className="flex gap-2">
-                                <input type="checkbox" />
+                                <input onChange={handleChange} type="checkbox" name="topwear" checked={filters.topwear} />
                                 Topwear
                             </label>
                             <label className="flex gap-2">
-                                <input type="checkbox" />
+                                <input onChange={handleChange} type="checkbox" name="bottomwear" checked={filters.bottomwear} />
                                 bottomwear
                             </label>
                             <label className="flex gap-2">
-                                <input type="checkbox" />
+                                <input onChange={handleChange} type="checkbox" name="winterwear" checked={filters.winterwear} />
                                 Winterwear
                             </label>
                         </div>
+                    </div>
+                    <div className="bg-gray-200  p-2 px-6">
+                        <button onClick={() => setFilters({
+                            men: false,
+                            women: false,
+                            kids: false,
+                            topwear: false,
+                            bottomwear: false,
+                            winterwear: false,
+                        })}>Clear Filters</button>
                     </div>
 
                 </div>
@@ -57,8 +121,19 @@ export const Collection = () => {
                             </select>
                         </div>
                     </div>
-                    <div>
-                        images
+                    <div className="grid grid-cols-4 gap-4">
+                        {
+                            filteredProducts.map((product) => {
+                                return (
+                                    <div key={product._id} className="shadow-xl p-5 flex flex-col gap-2 rounded-sm">
+                                        <img className="h-[200px] " src={product.images[0]} />
+                                        <h1>Price: ${product.price}</h1>
+                                        <h1 className="font-semibold">{product.productName}</h1>
+                                        <button className="bg-red-500 p-2 px-4 text-white rounded-sm">Add to Cart</button>
+                                    </div>
+                                )
+                            })
+                        }
                     </div>
                 </div>
             </div>
