@@ -16,6 +16,8 @@ import { Orders } from './pages/Orders';
 import {Toaster} from "react-hot-toast"
 import { SingleProductDetails } from './pages/SingleProductDetails';
 import { Checkout } from './pages/Checkout';
+import { SuccessOrder } from './pages/SuccessOrder';
+import { AllOrders } from './pages/AllOrders';
 
 function App() {
 
@@ -41,6 +43,12 @@ function App() {
         },
         {
           path:"/checkout" , element: <Checkout/>
+        },
+        {
+          path:"/success-order" , element: <SuccessOrder/>
+        },
+        {
+          path:"/all-orders" , element: <AllOrders/>
         },
         {
           path:"/product/:id" , element: <SingleProductDetails/>

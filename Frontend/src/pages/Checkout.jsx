@@ -2,10 +2,19 @@ import { Wrapper } from "../components/Wrapper"
 import { CartTotal } from "./CartTotal"
 import { useState } from "react"
 import toast from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
+import { useDispatch , useSelector } from "react-redux"
+import { placeOrder } from "../redux/orderSlice.js"
+import {clearCart} from "../redux/cartSlice.js"
+import { v4 as uuidv4 } from "uuid"
 
 
 export const Checkout = () => {
 
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const items = useSelector( state=> state.cart.items)
     const [userData, setUserData] = useState({
         firstName: "",
         lastName: "",
@@ -33,11 +42,29 @@ export const Checkout = () => {
         if (
             !userData.firstName || !userData.lastName || !userData.email || !userData.street || !userData.city || !userData.state || !userData.zipcode || !userData.country || !userData.phone
         ) {
+
             toast.error("Please fill all delivery details")
+            return
+        }
+
+        const newOrder = {
+            id: uuidv4(), 
+            items,
+            userData,
+            paymentMethod: userData.payment,
+            status: "Pending",
+            createdAt: new Date().toISOString()
 
         }
 
+
+        dispatch(placeOrder(newOrder))
+        dispatch(clearCart())
+        navigate("/success-order", {
+            state: { orderId: newOrder.id }
+        })
     }
+
 
 
     return (
@@ -92,7 +119,7 @@ export const Checkout = () => {
                         </div>
                     </div>
                     <div>
-                        <button onClick={handleOrder} className="bg-black text-white p-2 px-4">Place Order</button>
+                        <button onClick={() => handleOrder()} className="cursor-pointer bg-black text-white p-2 px-4">Place Order</button>
                     </div>
 
                 </div>
