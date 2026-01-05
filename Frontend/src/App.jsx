@@ -14,6 +14,7 @@ import { AdminAddItems } from './pages/AdminAddItems';
 import { AdminListItems } from './pages/AdminListItems';
 import { Orders } from './pages/Orders';
 import {Toaster} from "react-hot-toast"
+import { SingleProductDetails } from './pages/SingleProductDetails';
 
 function App() {
 
@@ -36,6 +37,9 @@ function App() {
         },
         {
           path:"/cart" , element: <Cart/>
+        },
+        {
+          path:"/product/:id" , element: <SingleProductDetails/>
         }
        ]
      },

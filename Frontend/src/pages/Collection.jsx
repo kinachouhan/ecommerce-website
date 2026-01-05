@@ -2,6 +2,7 @@ import { Wrapper } from "../components/Wrapper"
 import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState } from "react"
 import { fetchProducts } from "../redux/productSlice.js"
+import { useNavigate } from "react-router-dom"
 
 
 export const Collection = () => {
@@ -9,6 +10,8 @@ export const Collection = () => {
     const { products, loading } = useSelector(state => state.product)
 
     const dispatch = useDispatch()
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         dispatch(fetchProducts())
@@ -66,11 +69,11 @@ export const Collection = () => {
                         <h1 className="font-semibold py-2">CATEGORIES</h1>
                         <div className="flex flex-col  gap-2 ">
                             <label className="flex gap-2">
-                                <input onChange={handleChange} type="checkbox" name="men" checked={filters.men}/>
+                                <input onChange={handleChange} type="checkbox" name="men" checked={filters.men} />
                                 Men
                             </label>
                             <label className="flex gap-2">
-                                <input onChange={handleChange} type="checkbox" name="women" checked={filters.women}/>
+                                <input onChange={handleChange} type="checkbox" name="women" checked={filters.women} />
                                 Women
                             </label>
                             <label className="flex gap-2">
@@ -125,11 +128,13 @@ export const Collection = () => {
                         {
                             filteredProducts.map((product) => {
                                 return (
-                                    <div key={product._id} className="shadow-xl p-5 flex flex-col gap-2 rounded-sm">
-                                        <img className="h-[200px] " src={product.images[0]} />
-                                        <h1>Price: ${product.price}</h1>
-                                        <h1 className="font-semibold">{product.productName}</h1>
-                                        <button className="bg-red-500 p-2 px-4 text-white rounded-sm">Add to Cart</button>
+                                    <div key={product._id} className="flex flex-col p-5 bg-gray-100 rounded-sm shadow-xl">
+                                        <div onClick={() => navigate(`/product/${product._id}`)} className=" cursor-pointer  flex flex-col gap-2 ">
+                                            <img className="h-[200px] " src={product.images[0]} />
+                                            <h1>Price: ${product.price}</h1>
+                                            <h1 className="font-semibold">{product.productName}</h1>
+                                        </div>
+                                        <button className="bg-red-500 p-2 px-4 text-white rounded-sm mt-2">Add to Cart</button>
                                     </div>
                                 )
                             })

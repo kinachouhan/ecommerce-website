@@ -6,11 +6,13 @@ import { Subscribe } from "../components/Subscribe";
 import { useSelector, useDispatch } from "react-redux"
 import { useEffect } from "react"
 import { fetchProducts } from "../redux/productSlice.js"
+import {useNavigate} from "react-router-dom"
 
 export const Home = () => {
 
     const { products, loading } = useSelector(state => state.product)
-
+   
+    const navigate = useNavigate()
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -39,10 +41,10 @@ export const Home = () => {
                         {products
                             .slice()
                             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                            .slice(0, 8) // show latest 8 products
+                            .slice(0, 8) 
                             .map((product) => {
                                 return (
-                                    <div key={product._id} className="shadow-xl p-5 flex flex-col gap-2 rounded-sm">
+                                    <div onClick={()=>navigate(`/product/${product._id}`)} key={product._id} className=" cursor-pointer shadow-xl p-5 flex flex-col gap-2 rounded-sm">
                                         <img className="h-[300px] " src={product.images[0]} />
                                         <h1>Price: ${product.price}</h1>
                                         <h1 className="font-semibold">{product.productName}</h1>
@@ -60,7 +62,7 @@ export const Home = () => {
                         {
                             products.filter((product) => product.bestseller === true).map((product) => {
                                 return (
-                                    <div key={product._id} className="shadow-xl p-5 flex flex-col gap-2 rounded-sm">
+                                    <div onClick={()=>navigate(`/product/${product._id}`)} key={product._id} className="shadow-xl p-5 flex flex-col cursor-pointer gap-2 rounded-sm">
                                         <img className="h-[300px] " src={product.images[0]} />
                                         <h1>Price: ${product.price}</h1>
                                         <h1 className="font-semibold">{product.productName}</h1>
