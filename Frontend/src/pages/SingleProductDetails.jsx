@@ -5,20 +5,24 @@ import { FaStar } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { fetchProducts } from "../redux/productSlice.js"
+import { addToCart } from "../redux/cartSlice.js";
+import toast from "react-hot-toast"
 
 
 export const SingleProductDetails = () => {
 
     const { products } = useSelector(state => state.product)
+    const [selectedSize, setSelectedSize] = useState(null)
+
 
     const dispatch = useDispatch()
 
     useEffect(() => {
         fetchProducts()
-    }, [dispatch])
+    }, [])
 
 
-   
+
     const { id } = useParams();
     const navigate = useNavigate()
 
@@ -40,14 +44,28 @@ export const SingleProductDetails = () => {
         fetchData()
     }, [id])
 
-    
-     const relatedProducts = products.filter(
+
+    const relatedProducts = products.filter(
         (prod) =>
             prod.subCategory === product.subCategory
         //  &&
         //     prod._id !== product._id
     );
 
+    const handleAddToCart = () => {
+        if (!selectedSize) {
+            toast.error("Please select size")
+            return;
+        }
+
+        dispatch(
+            addToCart({
+                ...product,
+                size: selectedSize,
+            })
+        );
+        toast.success("Product added!!")
+    };
 
     if (!product || !product.images || product.images.length === 0) {
         return (
@@ -91,13 +109,20 @@ export const SingleProductDetails = () => {
                         {
                             product.sizes.map((size) => {
                                 return (
-                                    <button key={size} className="p-2 bg-gray-200 px-4 ">{size}</button>
+                                    <button
+
+                                        key={size}
+                                        className={`p-2  px-4 ${selectedSize === size ? "bg-black text-white" : "bg-gray-200 "} `}
+                                        onClick={() => setSelectedSize(size)}
+                                    >
+                                        {size}
+                                    </button>
                                 )
                             })
                         }
                     </div>
                     <div>
-                        <button className="bg-black text-white p-2 px-4 my-6">Add to Cart</button>
+                        <button onClick={handleAddToCart} className="cursor-pointer bg-black text-white p-2 px-4 my-6">Add to Cart</button>
                     </div>
                     <div className=" border-t-1 border-gray-300 ">
                     </div>
@@ -160,7 +185,7 @@ export const SingleProductDetails = () => {
                                                 <h1>Price: ${p.price}</h1>
                                                 <h1 className="font-semibold">{p.productName}</h1>
                                             </div>
-                                            <button className="bg-red-500 p-2 px-4 text-white rounded-sm mt-2">Add to Cart</button>
+                                           
                                         </div>
                                     )
                                 })

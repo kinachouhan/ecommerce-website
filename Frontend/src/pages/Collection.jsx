@@ -3,11 +3,12 @@ import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState } from "react"
 import { fetchProducts } from "../redux/productSlice.js"
 import { useNavigate } from "react-router-dom"
+import {addToCart} from "../redux/cartSlice.js"
 
 
 export const Collection = () => {
 
-    const { products, loading } = useSelector(state => state.product)
+    const { products} = useSelector(state => state.product)
 
     const dispatch = useDispatch()
 
@@ -24,14 +25,14 @@ export const Collection = () => {
         topwear: false,
         bottomwear: false,
         winterwear: false,
+        sortBy: ""
     });
 
-
     const handleChange = (e) => {
-        const { name, checked } = e.target
+        const { name, checked, value, type } = e.target
         setFilters((prev) => ({
             ...prev,
-            [name]: checked
+            [name]: type === "checkbox" ? checked : value
         }))
     }
 
@@ -56,6 +57,18 @@ export const Collection = () => {
 
 
         return categoryMatch && subCategoryMatch;
+    });
+
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        if (filters.sortBy === "lowtohigh") {
+            return a.price - b.price;
+        }
+
+        if (filters.sortBy === "hightolow") {
+            return b.price - a.price;
+        }
+
+        return 0; 
     });
 
     return (
@@ -117,16 +130,17 @@ export const Collection = () => {
                             <h1 className="text-gray-700 text-3xl text-center " >ALL <span className="text-black">COLLECTIONS _____</span></h1>
                         </div>
                         <div className="border border-black/20 p-2">
-                            <select className="outline-none">
-                                <option>Sort by: Relavent</option>
-                                <option>Sort by: Low to High</option>
-                                <option>Sort by: High to Low</option>
+                            <span>Sort By: </span>
+                            <select onChange={(e) => handleChange(e)} value={filters.sortBy} name="sortBy" className="outline-none">
+                                <option value=""> Relavent</option>
+                                <option value="lowtohigh">Low to High</option>
+                                <option value="hightolow"> High to Low</option>
                             </select>
                         </div>
                     </div>
                     <div className="grid grid-cols-4 gap-4">
                         {
-                            filteredProducts.map((product) => {
+                            sortedProducts.map((product) => {
                                 return (
                                     <div key={product._id} className="flex flex-col p-5 bg-gray-100 rounded-sm shadow-xl">
                                         <div onClick={() => navigate(`/product/${product._id}`)} className=" cursor-pointer  flex flex-col gap-2 ">
@@ -134,7 +148,7 @@ export const Collection = () => {
                                             <h1>Price: ${product.price}</h1>
                                             <h1 className="font-semibold">{product.productName}</h1>
                                         </div>
-                                        <button className="bg-red-500 p-2 px-4 text-white rounded-sm mt-2">Add to Cart</button>
+                                       
                                     </div>
                                 )
                             })

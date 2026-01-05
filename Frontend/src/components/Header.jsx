@@ -4,8 +4,21 @@ import { CgProfile } from "react-icons/cg";
 import { FaShoppingCart } from "react-icons/fa";
 import { TbHexagonLetterKFilled } from "react-icons/tb";
 import { Wrapper } from "./Wrapper";
+import {useSelector} from "react-redux"
 
 export const Header = ()=>{
+
+    
+
+     const cartCount = useSelector(state =>
+        state.cart.items.reduce((total, item) => total + item.quantity, 0)
+    );
+
+    console.log(cartCount)
+
+
+    
+
      return(
         <Wrapper>
             <div className=" flex justify-between items-center py-8">
@@ -24,7 +37,7 @@ export const Header = ()=>{
                     <button>< CiSearch className="text-2xl cursor-pointer" /></button>
                 </div>
                 <NavLink className="text-2xl cursor-pointer" to="/signup"><CgProfile /></NavLink>
-                <NavLink  className="text-2xl cursor-pointer" to="/cart"><FaShoppingCart /></NavLink>
+                <NavLink  className="text-2xl cursor-pointer flex" to="/cart"><FaShoppingCart /><span className="bg-black text-white rounded-full h-5 w-5 text-sm text-center ">{cartCount}</span></NavLink>
             </div>
         </div>
         </Wrapper>
