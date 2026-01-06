@@ -1,44 +1,59 @@
-import { configureStore } from '@reduxjs/toolkit'
-import productReducer from "./productSlice.js"
-import cartReducer from "./cartSlice.js"
-import orderReducer from "./orderSlice.js"
-import authReducer from "./authSlice.js"
+import { configureStore } from "@reduxjs/toolkit";
+import productReducer from "./productSlice";
+import cartReducer from "./cartSlice";
+import orderReducer from "./orderSlice";
+import authReducer from "./authSlice";
+import buyNowReducer from "./buyNow.js"
+
 import {
-     persistStore,
-     persistReducer,
-     FLUSH,
-     REHYDRATE,
-     PAUSE,
-     PERSIST,
-     PURGE,
-     REGISTER
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
 } from "redux-persist";
+
 import storage from "redux-persist/lib/storage";
 
-
-
-const persistConfig = {
-     key: "root",
-     storage,
-     whitelist: ["cart"] // persist only the cart slice
+/* CART PERSIST */
+const cartPersistConfig = {
+  key: "cart",
+  storage,
 };
 
-const persistedCartReducer = persistReducer(persistConfig, cartReducer);
+const persistedCartReducer = persistReducer(
+  cartPersistConfig,
+  cartReducer
+);
 
+/* ORDER PERSIST */
+const orderPersistConfig = {
+  key: "order",
+  storage,
+};
+
+const persistedOrderReducer = persistReducer(
+  orderPersistConfig,
+  orderReducer
+);
 
 export const store = configureStore({
-     reducer: {
-          product: productReducer,
-          cart: persistedCartReducer,   // ✅ persisted
-          order: orderReducer,
-          auth: authReducer,
-     },
-     middleware: (getDefaultMiddleware) =>
-          getDefaultMiddleware({
-               serializableCheck: {
-                    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-               },
-          }),
-})
+  reducer: {
+    product: productReducer,
+    cart: persistedCartReducer,
+    order: persistedOrderReducer, 
+    auth: authReducer,
+   buyNow: buyNowReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
+});
 
 export const persistor = persistStore(store);

@@ -7,28 +7,25 @@ import { useSelector, useDispatch } from "react-redux"
 import { fetchProducts } from "../redux/productSlice.js"
 import { addToCart } from "../redux/cartSlice.js";
 import toast from "react-hot-toast"
+import { setBuyNowItem } from "../redux/buyNow.js";
 
 
 export const SingleProductDetails = () => {
 
     const { products } = useSelector(state => state.product)
     const [selectedSize, setSelectedSize] = useState(null)
-
-
     const dispatch = useDispatch()
 
     useEffect(() => {
         fetchProducts()
     }, [])
 
-
-
     const { id } = useParams();
     const navigate = useNavigate()
 
+
     const [product, setProduct] = useState({})
     const [activeTab, setActiveTab] = useState("description");
-
 
     const fetchData = async () => {
         const res = await fetch(`http://localhost:3200/api/v1/products/product/${id}`)
@@ -38,7 +35,6 @@ export const SingleProductDetails = () => {
             setProduct(data.responseData)
         }
     }
-
 
     useEffect(() => {
         fetchData()
@@ -66,6 +62,22 @@ export const SingleProductDetails = () => {
         );
         toast.success("Product added!!")
     };
+
+    const handleBuy = () => {
+        if (!selectedSize) {
+            toast.error("Please select size")
+            return;
+        }
+
+        dispatch(
+            setBuyNowItem({
+                ...product,
+                size: selectedSize,
+            })
+        );
+
+        navigate("/checkout");
+    }
 
     if (!product || !product.images || product.images.length === 0) {
         return (
@@ -121,8 +133,9 @@ export const SingleProductDetails = () => {
                             })
                         }
                     </div>
-                    <div>
+                    <div className="flex gap-6">
                         <button onClick={handleAddToCart} className="cursor-pointer bg-black text-white p-2 px-4 my-6">Add to Cart</button>
+                        <button onClick={handleBuy} className="cursor-pointer bg-black text-white p-2 px-4 my-6">Buy Now</button>
                     </div>
                     <div className=" border-t-1 border-gray-300 ">
                     </div>
@@ -185,7 +198,7 @@ export const SingleProductDetails = () => {
                                                 <h1>Price: ${p.price}</h1>
                                                 <h1 className="font-semibold">{p.productName}</h1>
                                             </div>
-                                           
+
                                         </div>
                                     )
                                 })

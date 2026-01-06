@@ -1,6 +1,7 @@
 import { Wrapper } from "../components/Wrapper"
-import { useSelector } from "react-redux"
-
+import { useSelector , useDispatch } from "react-redux"
+import { fetchOrders } from "../redux/orderSlice"
+import {useEffect} from "react"
 
 export const AllOrders = () => {
 
@@ -13,6 +14,12 @@ export const AllOrders = () => {
         0
     )
     const total = subTotal + 10
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(fetchOrders())
+    }, [dispatch])
 
     if (!orders.length) {
         return (
@@ -27,23 +34,25 @@ export const AllOrders = () => {
             <h1 className="text-3xl font-semibold text-gray-600 mb-6 pt-12">MY <span className="text-black">ORDERS _______</span></h1>
 
             {orders.map(order => (
-                <div key={order.id} className="border border-gray-300 p-6 mb-8 rounded">
+                <div key={order._id} className="border border-gray-300 p-6 mb-5 rounded">
 
                     {/* Order Info */}
                     <div className="flex justify-between mb-4">
                         <div>
-                            <p className="font-semibold">Order ID: {order.id}</p>
+                            <p className="font-semibold">Order ID: {order._id}</p>
                             <p>
                                 Status:
-                                <span className={`ml-2 font-semibold ${order.status === "Pending" ? "text-orange-500" :
-                                    order.status === "Shipped" ? "text-blue-500" :
-                                        "text-green-600"
+                                <span className={`ml-2 font-semibold ${order.status === "Order Placed" ? "text-orange-500" :
+                                    order.status === "Delivered" ? "text-green-700" :
+                                    order.status === "Cancelled"? "text-red-600" :
+                                     order.status === "Pending"? "text-pink-600" : 
+                                      order.status === "Packing"? "text-blue-600" :"text-green-400"
                                     }`}>
                                     {order.status}
                                 </span>
                             </p>
                         </div>
-                       
+
                     </div>
 
                     {/* Product List */}
@@ -73,7 +82,7 @@ export const AllOrders = () => {
 
                     {/* Track Button */}
                     <button
-                        onClick={() => navigate(`/track-order/${order.id}`)}
+                        onClick={() => navigate(`/track-order/${order._id}`)}
                         className="mt-4 bg-black text-white px-6 py-2"
                     >
                         Track Order

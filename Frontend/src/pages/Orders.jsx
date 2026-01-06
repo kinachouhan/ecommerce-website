@@ -1,42 +1,81 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrders, updateOrderStatusAsync } from "../redux/orderSlice";
 import { GrDeliver } from "react-icons/gr";
+
 export const Orders = () => {
-    return (
-        <div>
-            <div className="text-2xl font-bold p-4">
-                <h1>Orders</h1>
+  const dispatch = useDispatch();
+  const { orders, loading } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  if (loading) return <h1>Loading Orders...</h1>;
+
+  return (
+    <div className="p-8">
+      <h1 className="text-3xl font-bold mb-6">All Orders</h1>
+
+      {orders.length === 0 && <p>No orders found</p>}
+
+      {orders.map((order) => (
+        <div
+          key={order._id}
+          className="border p-6 mb-6 rounded flex justify-between"
+        >
+          {/* Left side: Products + User */}
+          <div className="flex gap-5">
+            <GrDeliver className="text-7xl text-gray-700 border p-2" />
+            <div>
+              {order.items.map((item) => (
+                <h2 key={item.productId} className="font-semibold">
+                  {item.productName}
+                </h2>
+              ))}
+              <h1 className="text-xl font-bold">
+                {order.userData.firstName} {order.userData.lastName}
+              </h1>
+              <p className="text-sm">
+                {order.userData.street}, {order.userData.city},{" "}
+                {order.userData.state}
+              </p>
+              <p>{order.userData.phone}</p>
             </div>
-            <div className="p-8 border border-gray-300 w-[60%] flex justify-between">
+          </div>
 
-                <div className="w-[60%] flex gap-5">
-                    <div >
-                        <GrDeliver className=" text-7xl text-gray-700 border border-gray-300 p-2" />
-                    </div>
+          {/* Right side: Amount + Payment + Status */}
+          <div className="flex flex-col gap-2 items-end">
+            <h2 className="font-bold">${order.total}</h2>
+            <h3 className="font-bold text-sm">
+              Payment: {order.paymentStatus || order.paymentMethod}
+            </h3>
 
-                    <div>
-                        <h1 className="font-semibold pb-3">Women Round Neck cotton tshirt</h1>
-                        <h1 className="text-xl font-bold">Kina Chouhan</h1>
-                        <h2 className="text-sm">Raipur Paratha Gali, Sector 126 ,Noida , Uttar Pradesh , India </h2>
-                        <p>975599999</p>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-2 items-end">
-                    <h1 className="font-semibold">Items: 1</h1>
-                    <h2 className="font-bold">$40</h2>
-                    <h3 className="font-bold text-sm">Method: <span className="font-normal">COD</span></h3>
-                    <h2 className="font-bold text-sm">Payment: <span className="font-normal">Pending</span></h2>
-                
-                        <select className="border border-gray-300 px-6 py-2 outline-none">
-                            <option>Order Placed</option>
-                            <option>Packing</option>
-                            <option>Shipped</option>
-                            <option>Out for delivery</option>
-                            <option>Delivered</option>
-                            <option>Cancelled</option>
-                        </select>
-                  
-                </div>
-
-            </div>
+            <select
+              value={order.status}
+              onChange={(e) => {
+                const newStatus = e.target.value;
+                if (newStatus !== order.status) {
+                  dispatch(
+                    updateOrderStatusAsync({
+                      orderId: order._id,
+                      status: newStatus,
+                    })
+                  );
+                }
+              }}
+              className="border px-4 py-2"
+            >
+              <option value="Order Placed">Order Placed</option>
+              <option value="Pending">Pending</option>
+              <option value="Packing">Packing</option>
+              <option value="Out For Delivery">Out For Delivery</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
         </div>
-    )
-}
+      ))}
+    </div>
+  );
+};

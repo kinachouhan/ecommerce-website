@@ -48,7 +48,7 @@ export const Header = () => {
                         <input className="outline-none" placeholder="Search Here..." />
                         <button>< CiSearch className="text-2xl cursor-pointer" /></button>
                     </div>
-                    <div className="relative"
+                    <div className="relative p-2"
                         onMouseEnter={() => isAuthenticated && setOpen(true)}
                         onMouseLeave={() => setOpen(false)}
                     >
@@ -63,14 +63,14 @@ export const Header = () => {
                                 <div className="absolute right-0 top-8 w-40 bg-white border shadow-md rounded">
                                     <button
                                         onClick={() => navigate("/profile")}
-                                        className="block w-full px-4 py-2 hover:bg-gray-100 text-left"
+                                        className="cursor-pointer block w-full px-4 py-2 hover:bg-gray-100 text-left"
                                     >
                                         My Profile
                                     </button>
 
                                     <button
                                         onClick={() => navigate("/all-orders")}
-                                        className="block w-full px-4 py-2 hover:bg-gray-100 text-left"
+                                        className="cursor-pointer block w-full px-4 py-2 hover:bg-gray-100 text-left"
                                     >
                                         Orders
                                     </button>

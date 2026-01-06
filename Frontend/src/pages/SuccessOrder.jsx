@@ -8,7 +8,7 @@ export const SuccessOrder = () => {
     const location = useLocation()
 
     const orders = useSelector(store => store.order.orders)
-    const order = orders.find(o => o.id === location.state?.orderId)
+    const order = orders.find(o => o._id === location.state?.orderId)
 
     if (!order) return <h1>Order not found</h1>
 
@@ -26,9 +26,9 @@ export const SuccessOrder = () => {
                     </div>
                     <div className="flex flex-col gap-4">
                         {
-                            order.items.map((item) => {
+                            order.items.map((item , index) => {
                                 return (
-                                    <div className="flex justify-between border border-gray-200 p-6 rounded-sm">
+                                    <div key={index} className="flex justify-between border border-gray-200 p-6 rounded-sm">
                                         <div className="flex gap-6">
                                             <img className="h-[150px] w-[150px]" src={item.images[0]} />
                                             <div className="flex flex-col gap-4">
