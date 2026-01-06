@@ -1,10 +1,9 @@
-
-export const isAdmin = async(req, res, next)=>{
-     if(req.user.role !=="admin"){
-          return res.status(400).json({
-              success: flase,
-              message: "Admin accesss only"
-          })
-     }
-     next()
-}
+export const isAdmin = (req, res, next) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({
+            success: false,
+            message: "Access denied: Admins only"
+        });
+    }
+    next(); 
+};

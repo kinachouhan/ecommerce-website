@@ -6,21 +6,13 @@ import jwt from "jsonwebtoken"
 export const signUp = async (req, res) => {
     try {
 
-        const { name, email, password, role } = req.body
+        const { name, email, password } = req.body
 
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
             })
-        }
-
-        if (role === "admin" && !email.endWith("@admin.com")) {
-            return res.status(400).json({
-                success: false,
-                message: "Admin email must end with @admin.com"
-            })
-
         }
 
         const existingUser = await User.findOne({ email })
@@ -31,19 +23,37 @@ export const signUp = async (req, res) => {
             })
         }
 
+        const role = email.endsWith("@admin.com") ? "admin" : "user"
         const hashPassword = await bcrypt.hash(password, 10)
 
         const newUser = await User.create({
             name,
             email,
             password: hashPassword,
-            role: role || "user"
+            role
         })
 
-        return res.status(200).json({
-            success: true,
-            responseData: newUser
-        })
+
+        const token = jwt.sign(
+            { id: newUser._id, role: newUser.role },
+            process.env.SECRET_KEY,
+            { expiresIn: process.env.EXPIRES_IN }
+        );
+
+
+
+
+        return res
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            })
+            .status(200).json({
+                success: true,
+                responseData: newUser
+            })
 
     }
     catch (error) {
@@ -85,20 +95,22 @@ export const login = async (req, res) => {
             })
         }
 
-        const tokenData = {
-            id: user._id,
-            role: user.role
-        }
 
-        const token = jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: process.env.EXPIRES_IN })
+
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.SECRET_KEY,
+            { expiresIn: process.env.EXPIRES_IN }
+        );
+
 
 
 
         res.cookie("token", token, {
             httpOnly: true,
             secure: false,
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
 
@@ -118,11 +130,10 @@ export const login = async (req, res) => {
 }
 
 export const logout = async (req, res) => {
-
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            sameSite: "strict",
+            sameSite: "lax",
             secure: false
         })
 
@@ -134,6 +145,57 @@ export const logout = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Logout failed"
+        })
+    }
+}
+
+export const getMe = async (req, res) => {
+    try {
+        const token = req.cookies.token;
+        if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const user = await User.findById(decoded.id).select("-password");
+
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        return res.status(200).json({ 
+            success: true, 
+            responseData: user });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Invalid token" });
+    }
+};
+
+
+export const profile = async (req, res) => {
+    try {
+        const userId = req.user.id
+        const { address } = req.body
+
+        if (!address) {
+            return res.status(400).json({
+                success: false,
+                message: "Full address is required"
+            })
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { address },
+            { new: true }
+        ).select("-password")
+
+        res.status(200).json({
+            success: true,
+            responseData: updatedUser
+        })
+
+    }
+    catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
         })
     }
 }

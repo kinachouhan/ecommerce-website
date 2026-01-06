@@ -13,6 +13,7 @@ export const Checkout = () => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const user = useSelector(state => state.auth.user);
 
 
     const items = useSelector(state => state.cart.items)
@@ -45,6 +46,11 @@ export const Checkout = () => {
         }))
     }
 
+    useEffect(() => {
+        if (user?.address) {
+            setUserData(user.address);
+        }
+    }, [user]);
 
     const handleOrder = () => {
         if (
@@ -69,7 +75,9 @@ export const Checkout = () => {
 
 
         dispatch(placeOrder(newOrder))
-       
+
+        dispatch(clearCart());
+
         navigate("/success-order", {
             state: { orderId: newOrder.id }
         })

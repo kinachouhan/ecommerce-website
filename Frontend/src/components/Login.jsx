@@ -3,10 +3,13 @@ import { Wrapper } from "./Wrapper"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import {loginSuccess} from "../redux/authSlice.js"
+import {useDispatch} from "react-redux"
 
 export const Login = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [userDetails, setUserDetails] = useState({
         email: "",
         password: ""
@@ -38,14 +41,24 @@ export const Login = () => {
         const data = await res.json()
 
         if (data.success) {
-            navigate("/")
-            toast.success("LoggedIn successfully")
+             dispatch(loginSuccess(data.responseData))
+            if (data.responseData.role === "admin") {
+                navigate("/admin")
+                toast.success("LoggedIn successfully")
+                setUserDetails({
+                    email: "",
+                    password: ""
+                })
 
-            setUserDetails({
-                email: "",
-                password: ""
-            })
-        }else{
+            } else {
+                navigate("/")
+                toast.success("LoggedIn successfully")
+                setUserDetails({
+                    email: "",
+                    password: ""
+                })
+            }
+        } else {
             toast.error("Invalid Credentails")
         }
 

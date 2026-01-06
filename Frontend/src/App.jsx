@@ -1,5 +1,5 @@
 import './App.css'
-import { createBrowserRouter , RouterProvider} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from './pages/Home';
 import { Collection } from './pages/Collection';
 import { About } from './pages/About';
@@ -13,91 +13,117 @@ import { AdminHome } from './pages/AdminHome';
 import { AdminAddItems } from './pages/AdminAddItems';
 import { AdminListItems } from './pages/AdminListItems';
 import { Orders } from './pages/Orders';
-import {Toaster} from "react-hot-toast"
+import { Toaster } from "react-hot-toast"
 import { SingleProductDetails } from './pages/SingleProductDetails';
 import { Checkout } from './pages/Checkout';
 import { SuccessOrder } from './pages/SuccessOrder';
 import { AllOrders } from './pages/AllOrders';
+import { Profile } from './pages/profile';
+import {useDispatch} from "react-redux"
+import {loginSuccess} from "./redux/authSlice.js"
+import {useEffect} from "react"
 
 function App() {
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:3200/api/v1/users/me", {
+          credentials: "include" 
+        });
+        const data = await res.json();
+        if (data.success) {
+          dispatch(loginSuccess(data.responseData));
+        }
+      } catch (error) {
+        console.log("No logged in user", error);
+      }
+    };
+
+    fetchUser();
+  }, [dispatch]);
+
   const router = createBrowserRouter([
-     {
-       path: "/",
-       element: <MainLayout/>,
-       children: [
+    {
+      path: "/",
+      element: <MainLayout />,
+      children: [
         {
-           index: true, element: <Home/>,
+          index: true, element: <Home />,
         },
         {
-          path: "/collection" , element: <Collection/>
+          path: "/collection", element: <Collection />
         },
         {
-          path: "/about" , element: <About/>
+          path: "/about", element: <About />
         },
         {
-          path: "/contact", element: <Contact/>
+          path: "/contact", element: <Contact />
         },
         {
-          path:"/cart" , element: <Cart/>
+          path: "/profile", element: <Profile />
         },
         {
-          path:"/checkout" , element: <Checkout/>
+          path: "/cart", element: <Cart />
         },
         {
-          path:"/success-order" , element: <SuccessOrder/>
+          path: "/checkout", element: <Checkout />
         },
         {
-          path:"/all-orders" , element: <AllOrders/>
+          path: "/success-order", element: <SuccessOrder />
         },
         {
-          path:"/product/:id" , element: <SingleProductDetails/>
+          path: "/all-orders", element: <AllOrders />
+        },
+        {
+          path: "/product/:id", element: <SingleProductDetails />
         }
-       ]
-     },
-     {
-       path: "/admin",
-       element: <AdminLayout/>,
-       children: [
-      
+      ]
+    },
+    {
+      path: "/admin",
+      element: <AdminLayout />,
+      children: [
+
         {
-          index: true , element: <AdminAddItems/>
+          index: true, element: <AdminAddItems />
         },
         {
-          path: "list" , element: <AdminListItems/>
+          path: "list", element: <AdminListItems />
         },
         {
-          path: "orders", element: <Orders/>
+          path: "orders", element: <Orders />
         }
-       
-       ]
-     },
-     {
+
+      ]
+    },
+    {
       path: "/login",
       element: (
-        <Login/>
+        <Login />
       )
-     },
-     {
+    },
+    {
       path: "/signup",
       element: (
-        <Signup/>
+        <Signup />
       )
-     }
-    
+    }
+
   ])
-  
+
 
   return (
     <>
-  
-     <div>
-       <Toaster/>
-     </div>
-     <RouterProvider router={router}/>
+
+      <div>
+        <Toaster />
+      </div>
+      <RouterProvider router={router} />
     </>
   )
 }
 
 export default App
- 
