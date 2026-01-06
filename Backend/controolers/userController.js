@@ -6,13 +6,21 @@ import jwt from "jsonwebtoken"
 export const signUp = async (req, res) => {
     try {
 
-        const { name, email, password } = req.body
+        const { name, email, password, role } = req.body
 
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
             })
+        }
+
+        if (role === "admin" && !email.endWith("@admin.com")) {
+            return res.status(400).json({
+                success: false,
+                message: "Admin email must end with @admin.com"
+            })
+
         }
 
         const existingUser = await User.findOne({ email })
@@ -28,7 +36,8 @@ export const signUp = async (req, res) => {
         const newUser = await User.create({
             name,
             email,
-            password: hashPassword
+            password: hashPassword,
+            role: role || "user"
         })
 
         return res.status(200).json({
@@ -77,10 +86,21 @@ export const login = async (req, res) => {
         }
 
         const tokenData = {
-            id: user._id
+            id: user._id,
+            role: user.role
         }
 
         const token = jwt.sign(tokenData, process.env.SECRET_KEY, { expiresIn: process.env.EXPIRES_IN })
+
+
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        })
+
 
         return res.status(200).json({
             success: true,
@@ -93,6 +113,27 @@ export const login = async (req, res) => {
             success: false,
             message: "Login failed",
             error: error.message
+        })
+    }
+}
+
+export const logout = async (req, res) => {
+
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            sameSite: "strict",
+            secure: false
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Logout failed"
         })
     }
 }

@@ -7,6 +7,8 @@ import {dbConnect} from './dbConfig/dbConnect.js'
 import productRoute from "./routes/productRoute.js"
 import cors from "cors"
 import userRoute from "./routes/userRoute.js"
+import adminRoute from "./routes/adminRoute.js"
+import cookieParser from "cookie-parser"
 
 const app=express()
 const PORT = process.env.PORT
@@ -14,6 +16,7 @@ dbConnect()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 
 
@@ -25,6 +28,7 @@ app.use(cors({
 
 app.use("/api/v1/products" , productRoute)
 app.use("/api/v1/users" , userRoute)
+app.use("/api/v1/admin" , adminRoute)
 
 app.listen(PORT, ()=>{
      console.log(`server is listening on ${PORT} port`)

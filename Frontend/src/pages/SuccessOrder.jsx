@@ -5,20 +5,10 @@ import { useNavigate , useLocation} from "react-router-dom"
 export const SuccessOrder = () => {
 
     const navigate = useNavigate()
+    const location = useLocation()
 
-    const items = useSelector(state => state.cart.items)
-    const userData = useSelector(state => state.order.userData)
-
-    const subTotal = items.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-    )
-    const total = subTotal + 10
-
-    const { state } = useLocation()
-    const orders = useSelector(state => state.order.orders)
-
-    const order = orders.find(o => o.id === state?.orderId)
+    const orders = useSelector(store => store.order.orders)
+    const order = orders.find(o => o.id === location.state?.orderId)
 
     if (!order) return <h1>Order not found</h1>
 
@@ -61,11 +51,11 @@ export const SuccessOrder = () => {
                     </div>
                     <div className="border-y-1 border-gray-200 flex justify-between py-5 mt-12">
                         <h1>SubTotal:</h1>
-                        <h1>${total}.00</h1>
+                        <h1>${order.total}.00</h1>
                     </div>
                     <div className="flex justify-between py-5 font-bold text-xl">
                         <h1>Total Amount:</h1>
-                        <h1>${total}.00</h1>
+                        <h1>${order.total}.00</h1>
                     </div>
                     <div className="py-6 flex items-end flex-col ">
                         <h1 className="text-lg font-semibold py-4">Delivery Address</h1>

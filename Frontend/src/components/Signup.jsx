@@ -10,7 +10,8 @@ export const Signup = () => {
     const [userDetails, setUserDetails] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
+        role: "user"
     })
 
     const handleChange = (e) => {
@@ -27,6 +28,11 @@ export const Signup = () => {
             return
         }
 
+        if (userDetails.role === "admin" && !userDetails.email.endsWith("@admin.com")) {
+            toast.error("Admin email must end with @admin.com")
+            return
+        }
+
         const res = await fetch("http://localhost:3200/api/v1/users/signup", {
             method: "POST",
             headers: {
@@ -38,17 +44,20 @@ export const Signup = () => {
         const data = await res.json()
 
         if (data.success) {
-            navigate("/")
             toast.success("Account created!!")
+            navigate(
+                userDetails.role === "admin" ? "/admin" : "/"
+            )
+
             setUserDetails({
                 name: "",
                 email: "",
-                password: ""
+                password: "",
+                role: "user"
             })
+        } else {
+            toast.error(data.message || "Something went wrong")
         }
-
-
-
     }
 
 
@@ -62,6 +71,20 @@ export const Signup = () => {
                             <input onChange={handleChange} name="name" value={userDetails.name} className="border border-gray-700 p-2 rounded-sm outline-none" placeholder="Enter Name" type="text" />
                             <input onChange={handleChange} name="email" value={userDetails.email} className="border border-gray-700 p-2 rounded-sm outline-none" placeholder="Enter Email" type="email" />
                             <input onChange={handleChange} name="password" value={userDetails.password} className="border border-gray-700 p-2 rounded-sm outline-none" placeholder="Enter Password" type="password" />
+                            <div className="flex pb-2 gap-5 text-lg font-semibold">
+                                <label>
+                                    <input onChange={handleChange}
+                                        checked={userDetails.role === "user"}
+                                        className="cursor-pointer" value="user" type="radio" name="role" />
+                                    User
+                                </label>
+                                <label>
+                                    <input onChange={handleChange}
+                                        checked={userDetails.role === "admin"}
+                                        className="cursor-pointer" value="admin" type="radio" name="role" />
+                                    Admin
+                                </label>
+                            </div>
                         </div>
                         <div className="flex justify-between py-1 text-sm">
                             <p>Alreday have an account</p>

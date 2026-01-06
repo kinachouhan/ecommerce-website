@@ -1,10 +1,38 @@
 
-import { Outlet } from "react-router-dom";
+import { Outlet , Navigate} from "react-router-dom";
 import { AdminHeader } from "../components/AdminHeader";
 import { AdminSideBar } from "../components/AdminSideBar";
+import { useEffect, useState } from "react";
+
+
 
 
 export const AdminLayout = () => {
+
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  
+  useEffect(() => {
+    fetch("http://localhost:3200/api/v1/admin/dashboard", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then(res => res.json())
+      .then(data => {
+        if ( data.success ) {
+          setIsAdmin(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading) return <h1>Loading...</h1>;
+
+  if (!isAdmin) return <Navigate to="/" />;
+
+
   return (
     <>
       {/* Header */}
@@ -14,7 +42,7 @@ export const AdminLayout = () => {
       <div className="flex min-h-screen">
         {/* Left Sidebar */}
         <aside>
-          <AdminSideBar/>
+          <AdminSideBar />
         </aside>
 
         {/* Right Content */}

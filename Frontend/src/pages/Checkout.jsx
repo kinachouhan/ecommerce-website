@@ -3,9 +3,9 @@ import { CartTotal } from "./CartTotal"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
-import { useDispatch , useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { placeOrder } from "../redux/orderSlice.js"
-import {clearCart} from "../redux/cartSlice.js"
+import { clearCart } from "../redux/cartSlice.js"
 import { v4 as uuidv4 } from "uuid"
 
 
@@ -14,7 +14,15 @@ export const Checkout = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const items = useSelector( state=> state.cart.items)
+
+    const items = useSelector(state => state.cart.items)
+
+    const subTotal = items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+    )
+
+    const total = subTotal + 10
     const [userData, setUserData] = useState({
         firstName: "",
         lastName: "",
@@ -48,9 +56,11 @@ export const Checkout = () => {
         }
 
         const newOrder = {
-            id: uuidv4(), 
+            id: uuidv4(),
             items,
             userData,
+            subTotal,
+            total,
             paymentMethod: userData.payment,
             status: "Pending",
             createdAt: new Date().toISOString()
@@ -59,7 +69,7 @@ export const Checkout = () => {
 
 
         dispatch(placeOrder(newOrder))
-        dispatch(clearCart())
+       
         navigate("/success-order", {
             state: { orderId: newOrder.id }
         })
