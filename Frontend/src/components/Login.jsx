@@ -3,8 +3,10 @@ import { Wrapper } from "./Wrapper"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
-import {loginSuccess} from "../redux/authSlice.js"
-import {useDispatch} from "react-redux"
+import { setUser } from "../redux/authSlice.js"
+import { useDispatch , useSelector } from "react-redux"
+import { fetchCart } from "../redux/cartSlice.js"
+import { useEffect } from "react"
 
 export const Login = () => {
 
@@ -15,6 +17,8 @@ export const Login = () => {
         password: ""
     })
 
+    const isAuthenticated = useSelector(state=>state.auth.isAuthenticated)
+
     const handleChange = (e) => {
         const { name, value } = e.target
         setUserDetails(prev => ({
@@ -22,6 +26,12 @@ export const Login = () => {
             [name]: value
         }))
     }
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            dispatch(fetchCart());
+        }
+    }, [isAuthenticated, dispatch]);
 
     const handleLogin = async () => {
         if (!userDetails.email || !userDetails.password) {
@@ -41,7 +51,8 @@ export const Login = () => {
         const data = await res.json()
 
         if (data.success) {
-             dispatch(loginSuccess(data.responseData))
+            dispatch(setUser(data.responseData))
+
             if (data.responseData.role === "admin") {
                 navigate("/admin")
                 toast.success("LoggedIn successfully")

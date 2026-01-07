@@ -9,7 +9,7 @@ import { Signup } from './components/Signup';
 import { Cart } from './cart/Cart';
 import { MainLayout } from './layout/MainLayout';
 import { AdminLayout } from './layout/AdminLayout';
-import { AdminHome } from './pages/AdminHome';
+
 import { AdminAddItems } from './pages/AdminAddItems';
 import { AdminListItems } from './pages/AdminListItems';
 import { Orders } from './pages/Orders';
@@ -20,7 +20,7 @@ import { SuccessOrder } from './pages/SuccessOrder';
 import { AllOrders } from './pages/AllOrders';
 import { Profile } from './pages/profile';
 import {useDispatch} from "react-redux"
-import {loginSuccess} from "./redux/authSlice.js"
+import {setUser} from "./redux/authSlice.js"
 import {useEffect} from "react"
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
         });
         const data = await res.json();
         if (data.success) {
-          dispatch(loginSuccess(data.responseData));
+          dispatch(setUser(data.responseData));
         }
       } catch (error) {
         console.log("No logged in user", error);

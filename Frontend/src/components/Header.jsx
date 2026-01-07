@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { setSearchInput } from "../redux/productSlice.js";
 import { useLocation } from "react-router-dom";
+import {logout} from "../redux/authSlice.js"
 
 export const Header = () => {
 
@@ -23,13 +24,19 @@ export const Header = () => {
     const [open, setOpen] = useState(false)
 
     const { isAuthenticated } = useSelector(state => state.auth)
-
     const handleLogout = async () => {
-        await fetch("http://localhost:3200/api/v1/users/logout", {
-            method: "DELETE",
-            credentials: "include",
-        });
-        navigate("/login")
+        try {
+            await fetch("http://localhost:3200/api/v1/users/logout", {
+                method: "DELETE",
+                credentials: "include",
+            });
+
+            dispatch(logout());
+         
+            navigate("/login");
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
     };
 
     const handleSearch = (e) => {

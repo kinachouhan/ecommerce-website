@@ -9,22 +9,22 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-         loginSuccess: (state , action)=>{
-             state.isAuthenticated = true,
-             state.user = action.payload
-         },
-         logoutUser: (state, action)=>{
-             state.isAuthenticated = false,
-             state.user = null
-         },
-         updateAddress: (state,action)=>{
-             if(state.user){
-                 state.user.address = action.payload
-             }
-         }
+        setUser: (state, action) => {
+            state.user = action.payload;
+            state.isAuthenticated = true;
+        },
+        logout: (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+        },
+        updateAddress: (state, action) => {
+            if (state.user) {
+                state.user.address = action.payload
+            }
+        }
     }
 })
 
 
-export const {loginSuccess , logoutUser , updateAddress} = authSlice.actions
+export const { setUser, logout, updateAddress } = authSlice.actions
 export default authSlice.reducer

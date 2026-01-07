@@ -4,6 +4,7 @@ import cartReducer from "./cartSlice";
 import orderReducer from "./orderSlice";
 import authReducer from "./authSlice";
 import buyNowReducer from "./buyNow.js"
+import reviewReducer from "./reviewSlice.js"
 
 import {
   persistStore,
@@ -47,6 +48,7 @@ export const store = configureStore({
     order: persistedOrderReducer, 
     auth: authReducer,
    buyNow: buyNowReducer,
+   review: reviewReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
