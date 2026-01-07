@@ -3,20 +3,16 @@ import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState } from "react"
 import { fetchProducts } from "../redux/productSlice.js"
 import { useNavigate } from "react-router-dom"
-import {addToCart} from "../redux/cartSlice.js"
+import { clearSearchInput } from "../redux/productSlice.js"
 
 
 export const Collection = () => {
 
-    const { products} = useSelector(state => state.product)
+    const { products, searchInput } = useSelector(state => state.product)
 
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
-
-    useEffect(() => {
-        dispatch(fetchProducts())
-    }, [])
 
     const [filters, setFilters] = useState({
         men: false,
@@ -36,7 +32,16 @@ export const Collection = () => {
         }))
     }
 
-    const filteredProducts = products.filter(product => {
+    const searchedProducts = searchInput
+        ? products.filter(product =>
+            product.productName
+                .toLowerCase()
+                .includes(searchInput.toLowerCase())
+        )
+        : products;
+
+
+    const filteredProducts = searchedProducts.filter(product => {
 
         const categorySelected =
             filters.men || filters.women || filters.kids;
@@ -59,6 +64,13 @@ export const Collection = () => {
         return categoryMatch && subCategoryMatch;
     });
 
+    useEffect(() => {
+        dispatch(fetchProducts());
+        return () => {
+            dispatch(clearSearchInput());
+        };
+    }, [dispatch]);
+
     const sortedProducts = [...filteredProducts].sort((a, b) => {
         if (filters.sortBy === "lowtohigh") {
             return a.price - b.price;
@@ -68,7 +80,7 @@ export const Collection = () => {
             return b.price - a.price;
         }
 
-        return 0; 
+        return 0;
     });
 
     return (
@@ -148,7 +160,7 @@ export const Collection = () => {
                                             <h1>Price: ${product.price}</h1>
                                             <h1 className="font-semibold">{product.productName}</h1>
                                         </div>
-                                       
+
                                     </div>
                                 )
                             })

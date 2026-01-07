@@ -6,13 +6,16 @@ import { TbHexagonLetterKFilled } from "react-icons/tb";
 import { Wrapper } from "./Wrapper";
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { logoutUser } from "../redux/authSlice.js"
 import { useState } from "react"
+import { setSearchInput } from "../redux/productSlice.js";
+import { useLocation } from "react-router-dom";
 
 export const Header = () => {
 
-
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [searchText, setSearchText] = useState("");
+    const location = useLocation();
     const cartCount = useSelector(state =>
         state.cart.items.reduce((total, item) => total + item.quantity, 0)
     );
@@ -29,7 +32,21 @@ export const Header = () => {
         navigate("/login")
     };
 
-    
+    const handleSearch = (e) => {
+        if (location.pathname !== "/collection") {
+            navigate("/collection")
+        }
+        setSearchText(e.target.value)
+        if (e.target.value.trim() === "") {
+            dispatch(setSearchInput(""));
+        }
+    }
+
+    const handleSearchBtn = () => {
+        if (!searchText.trim()) return
+        dispatch(setSearchInput(searchText))
+    }
+
 
     return (
         <Wrapper>
@@ -45,8 +62,19 @@ export const Header = () => {
                 </div>
                 <div className="flex gap-4 items-center">
                     <div className="border border-gray-400 flex items-center p-1 rounded-sm">
-                        <input className="outline-none" placeholder="Search Here..." />
-                        <button>< CiSearch className="text-2xl cursor-pointer" /></button>
+                        <input
+                            value={searchText}
+                            onChange={handleSearch}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleSearchBtn();
+                                }
+                            }}
+
+                            className="outline-none" placeholder="Search Here..." />
+                        <button
+                            onClick={handleSearchBtn}
+                        >< CiSearch className="text-2xl cursor-pointer" /></button>
                     </div>
                     <div className="relative p-2"
                         onMouseEnter={() => isAuthenticated && setOpen(true)}

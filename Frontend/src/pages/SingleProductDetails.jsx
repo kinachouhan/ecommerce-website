@@ -10,11 +10,16 @@ import toast from "react-hot-toast"
 import { setBuyNowItem } from "../redux/buyNow.js";
 
 
+
 export const SingleProductDetails = () => {
 
     const { products } = useSelector(state => state.product)
     const [selectedSize, setSelectedSize] = useState(null)
     const dispatch = useDispatch()
+
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+
+    console.log(isAuthenticated)
 
     useEffect(() => {
         fetchProducts()
@@ -170,43 +175,52 @@ export const SingleProductDetails = () => {
                     (
                         <div className="border border-gray-300 p-8 text-sm  flex gap-4 flex-col ">
                             <div className="border-b-1 border-gray-200 py-6" >
-                                <h1 className="border border-gray-200 bg-gray-100 p-4">Please <span className="underline font-bold cursor-pointer" onClick={() => navigate("/login")}>login</span> to write a review. Only verified purchasers can submit reviews.</h1>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <h1 className="font-semibold text-2xl ">Customer Reviews</h1>
-                                <p className="text-gray-500">No reviews yet. Be the first to review this product!!</p>
-                            </div>
-
-                        </div>
+                                {
+                                    isAuthenticated === true
+                                        ?
+                                        (
+                                              <h1 className = "border border-yellow-300 bg-yellow-50 p-4 font-semibold text-sm text-red-800">Note: <span className="font-normal">You must purchase this product before you can submit a review. This helps us maintain authentic and verified reviews.</span></h1>
+                                        )
+                                            : (
+                                                <h1 className = "border border-gray-200 bg-gray-100 p-4">Please<span className="underline font-bold cursor-pointer" onClick={() => navigate("/login")}>login</span> to write a review. Only verified purchasers can submit reviews.</h1>
                     )
                 }
-
-
             </div>
-            {
-                relatedProducts.length > 0 &&
-                <div>
-                    <h1 className="text-center font-semibold text-gray-500 text-3xl ">RELATED <span className="text-black my-6">PRODUCTS _____</span></h1>
-                    {
-                        <div className="grid grid-cols-4 gap-4 py-12 pb-20">
-                            {
-                                relatedProducts.filter((prod) => prod.subCategory === product.subCategory).map((p) => {
-                                    return (
-                                        <div key={p._id} className="flex flex-col p-5 bg-gray-100 rounded-sm shadow-xl">
-                                            <div onClick={() => navigate(`/product/${p._id}`)} className=" cursor-pointer  flex flex-col gap-2 ">
-                                                <img className="h-[200px] " src={p.images[0]} />
-                                                <h1>Price: ${p.price}</h1>
-                                                <h1 className="font-semibold">{p.productName}</h1>
-                                            </div>
+            <div className="flex flex-col gap-2">
+                <h1 className="font-semibold text-2xl ">Customer Reviews</h1>
+                <p className="text-gray-500">No reviews yet. Be the first to review this product!!</p>
+            </div>
 
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>
+        </div>
+    )
+}
+
+
+            </div >
+{
+    relatedProducts.length > 0 &&
+        <div>
+            <h1 className="text-center font-semibold text-gray-500 text-3xl ">RELATED <span className="text-black my-6">PRODUCTS _____</span></h1>
+            {
+                <div className="grid grid-cols-4 gap-4 py-12 pb-20">
+                    {
+                        relatedProducts.filter((prod) => prod.subCategory === product.subCategory).map((p) => {
+                            return (
+                                <div key={p._id} className="flex flex-col p-5 bg-gray-100 rounded-sm shadow-xl">
+                                    <div onClick={() => navigate(`/product/${p._id}`)} className=" cursor-pointer  flex flex-col gap-2 ">
+                                        <img className="h-[200px] " src={p.images[0]} />
+                                        <h1>Price: ${p.price}</h1>
+                                        <h1 className="font-semibold">{p.productName}</h1>
+                                    </div>
+
+                                </div>
+                            )
+                        })
                     }
                 </div>
             }
-        </Wrapper>
+        </div>
+}
+        </Wrapper >
     )
 }

@@ -10,6 +10,7 @@ import userRoute from "./routes/userRoute.js"
 import adminRoute from "./routes/adminRoute.js"
 import cookieParser from "cookie-parser"
 import orderRoute from "./routes/orderRoute.js"
+import reviewRoute from "./routes/reviewRoute.js"
 
 const app=express()
 const PORT = process.env.PORT
@@ -31,6 +32,7 @@ app.use("/api/v1/products" , productRoute)
 app.use("/api/v1/users" , userRoute)
 app.use("/api/v1/admin" , adminRoute)
 app.use("/api/v1/orders", orderRoute)
+app.use("/api/v1/reviews" , reviewRoute)
 
 app.listen(PORT, ()=>{
      console.log(`server is listening on ${PORT} port`)
