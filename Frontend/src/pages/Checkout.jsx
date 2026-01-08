@@ -1,21 +1,18 @@
-import { Wrapper } from "../components/Wrapper"
-import { CartTotal } from "./CartTotal"
-import { useState } from "react"
-import toast from "react-hot-toast"
-import { useNavigate } from "react-router-dom"
-import { useDispatch, useSelector } from "react-redux"
-import { clearCart } from "../redux/cartSlice.js"
-import { useEffect } from "react"
-import { clearBuyNowItem } from "../redux/buyNow.js"
-import { placeOrderAsync } from "../redux/orderSlice.js"
-
+import { Wrapper } from "../components/Wrapper";
+import { CartTotal } from "./CartTotal";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "../redux/cartSlice.js";
+import { clearBuyNowItem } from "../redux/buyNow.js";
+import { placeOrderAsync } from "../redux/orderSlice.js";
 
 export const Checkout = () => {
 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const user = useSelector(state => state.auth.user);
-
 
     const buyNowItem = useSelector(state => state.buyNow.item);
     const cartItems = useSelector(state => state.cart.items);
@@ -27,7 +24,8 @@ export const Checkout = () => {
         0
     );
 
-    const total = subTotal + 10
+    const total = subTotal + 10;
+
     const [userData, setUserData] = useState({
         firstName: "",
         lastName: "",
@@ -39,16 +37,12 @@ export const Checkout = () => {
         country: "",
         phone: "",
         payment: "",
-    })
+    });
 
     const handleInputData = (e) => {
-        const { name, value } = e.target
-
-        setUserData((prev) => ({
-            ...prev,
-            [name]: value
-        }))
-    }
+        const { name, value } = e.target;
+        setUserData(prev => ({ ...prev, [name]: value }));
+    };
 
     useEffect(() => {
         if (user?.address) {
@@ -58,7 +52,6 @@ export const Checkout = () => {
             }));
         }
     }, [user]);
-
 
     const handleOrder = async () => {
         if (
@@ -100,12 +93,8 @@ export const Checkout = () => {
         try {
             const result = await dispatch(placeOrderAsync(newOrder)).unwrap();
 
-
-            if (buyNowItem) {
-                dispatch(clearBuyNowItem());
-            } else {
-                dispatch(clearCart());
-            }
+            if (buyNowItem) dispatch(clearBuyNowItem());
+            else dispatch(clearCart());
 
             navigate("/success-order", {
                 state: { orderId: result._id }
@@ -116,65 +105,147 @@ export const Checkout = () => {
         }
     };
 
-
-
     return (
-        <Wrapper>
-            <div className="border-t-1 border-gray-200 py-6 pb-60 flex gap-12">
-                <div className="w-1/2">
-                    <h1 className="text-2xl font-semibold text-gray-500 py-8">DELIVERY <span className="text-black">INFORMATION ______</span></h1>
-                    <div className="flex gap-6 flex-col">
-                        <div className="flex gap-2">
-                            <input value={userData.firstName} onChange={(e) => handleInputData(e)} className="border border-gray-300 p-1 px-4 outline-none rounded-sm w-full" type="text" placeholder="First Name" name="firstName" />
-                            <input value={userData.lastName} onChange={(e) => handleInputData(e)} className="border border-gray-300 p-1 px-4 outline-none rounded-sm w-full" type="text" placeholder="Last Name" name="lastName" />
+    <Wrapper>
+        <div className="border-t border-gray-200 py-8 sm:pb-40 sm:pt-20">
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+                {/* ================= LEFT : DELIVERY INFO ================= */}
+                <div className="bg-white border border-gray-200 rounded-md p-6">
+                    <h1 className="text-xl font-semibold text-gray-700 mb-6">
+                        DELIVERY <span className="text-black">INFORMATION</span>
+                    </h1>
+
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <input
+                                className="border border-gray-300 p-2 w-full rounded outline-none"
+                                placeholder="First Name"
+                                name="firstName"
+                                value={userData.firstName}
+                                onChange={handleInputData}
+                            />
+                            <input
+                                className="border border-gray-300 p-2 w-full rounded outline-none"
+                                placeholder="Last Name"
+                                name="lastName"
+                                value={userData.lastName}
+                                onChange={handleInputData}
+                            />
                         </div>
-                        <input value={userData.email} onChange={(e) => handleInputData(e)} className="border border-gray-300 p-1 px-4 outline-none rounded-sm" type="email" placeholder="Email Address" name="email" />
-                        <input value={userData.street} onChange={(e) => handleInputData(e)} className="border border-gray-300 p-1 px-4 outline-none rounded-sm" type="text" placeholder="Street" name="street" />
-                        <div className="flex gap-2">
-                            <input value={userData.city} onChange={(e) => handleInputData(e)} className="w-full border border-gray-300 p-1 px-4 outline-none rounded-sm" type="text" placeholder="City" name="city" />
-                            <input value={userData.state} onChange={(e) => handleInputData(e)} className="w-full border border-gray-300 p-1 px-4 outline-none rounded-sm" type="text" placeholder="State" name="state" />
+
+                        <input
+                            className="border border-gray-300 p-2 rounded outline-none"
+                            placeholder="Email Address"
+                            name="email"
+                            value={userData.email}
+                            onChange={handleInputData}
+                        />
+
+                        <input
+                            className="border border-gray-300 p-2 rounded outline-none"
+                            placeholder="Street"
+                            name="street"
+                            value={userData.street}
+                            onChange={handleInputData}
+                        />
+
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <input
+                                className="border border-gray-300 p-2 w-full rounded outline-none"
+                                placeholder="City"
+                                name="city"
+                                value={userData.city}
+                                onChange={handleInputData}
+                            />
+                            <input
+                                className="border border-gray-300 p-2 w-full rounded outline-none"
+                                placeholder="State"
+                                name="state"
+                                value={userData.state}
+                                onChange={handleInputData}
+                            />
                         </div>
-                        <div className="flex gap-2">
-                            <input value={userData.zipcode} onChange={(e) => handleInputData(e)} className="w-full border border-gray-300 p-1 px-4 outline-none rounded-sm" type="text" placeholder="Zipcode" name="zipcode" />
-                            <input value={userData.country} onChange={(e) => handleInputData(e)} className="w-full border border-gray-300 p-1 px-4 outline-none rounded-sm" type="text" placeholder="Country" name="country" />
+
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <input
+                                className="border border-gray-300 p-2 w-full rounded outline-none"
+                                placeholder="Zipcode"
+                                name="zipcode"
+                                value={userData.zipcode}
+                                onChange={handleInputData}
+                            />
+                            <input
+                                className="border border-gray-300 p-2 w-full rounded outline-none"
+                                placeholder="Country"
+                                name="country"
+                                value={userData.country}
+                                onChange={handleInputData}
+                            />
                         </div>
-                        <input value={userData.phone} onChange={(e) => handleInputData(e)} className="border border-gray-300 p-1 px-4 outline-none rounded-sm" placeholder="Phone" name="phone" />
+
+                        <input
+                            className="border border-gray-300 p-2 rounded outline-none"
+                            placeholder="Phone"
+                            name="phone"
+                            value={userData.phone}
+                            onChange={handleInputData}
+                        />
                     </div>
                 </div>
-                <div className="w-1/2 pl-12 flex pt-20 items-end flex-col">
+
+                {/* ================= RIGHT : ORDER SUMMARY ================= */}
+                <div className="flex flex-col gap-6 lg:sticky lg:top-20 h-fit">
+
+                    {/* CART TOTAL */}
                     <div>
                         <CartTotal items={items} />
                     </div>
-                    <div className="py-8">
-                        <h1 className="text-2xl text-gray-500 font-semibold pb-6">PAYMENT <span className="text-black">METHOD _____</span></h1>
-                        <div className="flex gap-5 items-center">
-                            <label className="border border-gray-200 p-2">
-                                <input onChange={(e) => handleInputData(e)}
+
+                    {/* PAYMENT METHOD */}
+                    <div className="bg-white border border-gray-200 rounded-md p-6">
+                        <h1 className="text-lg font-semibold text-gray-700 mb-4">
+                            PAYMENT METHOD
+                        </h1>
+
+                        <div className="flex flex-col gap-3">
+                            <label className="flex items-center gap-3 border-gray-300 border p-3 rounded cursor-pointer hover:border-black">
+                                <input
                                     type="radio"
                                     name="payment"
                                     value="online"
                                     checked={userData.payment === "online"}
+                                    onChange={handleInputData}
                                 />
-                                Bank Account
+                                <span className="font-medium">Online Payment</span>
                             </label>
-                            <label className="border border-gray-200 p-2">
-                                <input onChange={(e) => handleInputData(e)}
+
+                            <label className="flex items-center gap-3 border border-gray-300 p-3 rounded cursor-pointer hover:border-black">
+                                <input
                                     type="radio"
                                     name="payment"
                                     value="cod"
                                     checked={userData.payment === "cod"}
-
+                                    onChange={handleInputData}
                                 />
-                                Cash on delivery
+                                <span className="font-medium">Cash on Delivery</span>
                             </label>
                         </div>
                     </div>
-                    <div>
-                        <button onClick={() => handleOrder()} className="cursor-pointer bg-black text-white p-2 px-4">Place Order</button>
-                    </div>
+
+                    {/* PLACE ORDER */}
+                    <button
+                        onClick={handleOrder}
+                        className="w-full bg-black text-white py-3 rounded-md text-lg hover:opacity-90"
+                    >
+                        Place Order
+                    </button>
 
                 </div>
             </div>
-        </Wrapper>
-    )
-}
+        </div>
+    </Wrapper>
+);
+
+};

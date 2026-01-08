@@ -12,24 +12,27 @@ export const CartTotal = ({ items: propItems }) => {
   const total = subTotal + shipping;
 
   return (
-    <>
-      <h1 className="text-gray-500 font-semibold text-3xl">
-        CART <span className="text-black">TOTALS_____</span>
+    <div className="bg-white border border-gray-200 rounded-md p-6 w-full shadow-sm">
+      <h1 className="text-lg font-semibold text-gray-700 mb-4">
+        CART <span className="text-black">TOTALS</span>
       </h1>
 
-      <div className="pt-6 flex flex-col">
-        <h1 className="flex justify-between border-b pb-2">
-          Subtotal:<span> ${subTotal.toFixed(2)}</span>
-        </h1>
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-between text-gray-600">
+          <span>Subtotal:</span>
+          <span>${subTotal.toFixed(2)}</span>
+        </div>
 
-        <h1 className="flex justify-between border-b py-2">
-          Shipping Fee:<span> ${shipping.toFixed(2)}</span>
-        </h1>
+        <div className="flex justify-between text-gray-600">
+          <span>Shipping Fee:</span>
+          <span>${shipping.toFixed(2)}</span>
+        </div>
 
-        <h1 className="flex justify-between font-semibold pt-2">
-          Total:<span> ${total.toFixed(2)}</span>
-        </h1>
+        <div className="flex justify-between font-semibold text-gray-800 text-lg border-t border-gray-200 pt-3">
+          <span>Total:</span>
+          <span>${total.toFixed(2)}</span>
+        </div>
       </div>
-    </>
+    </div>
   );
 };

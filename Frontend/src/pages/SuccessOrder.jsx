@@ -1,77 +1,96 @@
-import { Wrapper } from "../components/Wrapper"
-import { useSelector } from "react-redux"
-import { useNavigate , useLocation} from "react-router-dom"
+import { Wrapper } from "../components/Wrapper";
+import { useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const SuccessOrder = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const navigate = useNavigate()
-    const location = useLocation()
+  const orders = useSelector((store) => store.order.orders);
+  const order = orders.find((o) => o._id === location.state?.orderId);
 
-    const orders = useSelector(store => store.order.orders)
-    const order = orders.find(o => o._id === location.state?.orderId)
+  if (!order) return <h1 className="text-center py-20">Order not found</h1>;
 
-    if (!order) return <h1>Order not found</h1>
+  return (
+    <Wrapper>
+      <div className="py-12 border-t border-gray-200">
+        {/* Thank You Section */}
+        <div className="flex flex-col justify-center items-center gap-4 py-10 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold">
+            Thanks for shopping with <span className="text-black">Kina's Store!</span>
+          </h1>
+          <p className="text-lg text-gray-500 font-semibold">
+            Your order has been placed successfully
+          </p>
+        </div>
 
+        {/* Order Details */}
+        <div className="py-8">
+          <h1 className="font-semibold text-2xl text-gray-500 pb-6">
+            ORDER <span className="text-black">DETAILS _____</span>
+          </h1>
 
-    return (
-        <Wrapper>
-            <div className="py-12 border-t-1 border-gray-200">
-                <div className="flex justify-center items-center flex-col gap-4 py-10">
-                    <h1 className="text-5xl font-bold">Thanks for shopping with Kina's Store!!</h1>
-                    <p className="text-lg text-gray-500 font-semibold">Your order has been placed successfully</p>
+          <div className="flex flex-col gap-4">
+            {order.items.map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col md:flex-row justify-between border border-gray-200 p-4 md:p-6 rounded-md gap-4 md:gap-0"
+              >
+                <div className="flex gap-4 md:gap-6 items-center">
+                  <img
+                    className="h-28 w-28 md:h-36 md:w-36 object-cover rounded"
+                    src={item.images[0]}
+                    alt={item.productName}
+                  />
+                  <div className="flex flex-col gap-2">
+                    <h1 className="text-lg md:text-xl font-semibold">{item.productName}</h1>
+                    <div className="flex flex-col md:flex-row gap-2 md:gap-4 text-gray-600 text-sm md:text-md">
+                      <span>Price: ${item.price}</span>
+                      <span>Quantity: {item.quantity}</span>
+                      <span>Size: {item.size}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="py-12 flex flex-col ">
-                    <div className="pb-12">
-                        <h1 className="font-semibold text-2xl text-gray-500">ORDER <span className="text-black">DETAILS_____</span></h1>
-                    </div>
-                    <div className="flex flex-col gap-4">
-                        {
-                            order.items.map((item , index) => {
-                                return (
-                                    <div key={index} className="flex justify-between border border-gray-200 p-6 rounded-sm">
-                                        <div className="flex gap-6">
-                                            <img className="h-[150px] w-[150px]" src={item.images[0]} />
-                                            <div className="flex flex-col gap-4">
-                                                <h1 className="text-xl font-semibold">{item.productName}</h1>
-                                                <div className="flex gap-4 text-md text-gray-600">
-                                                    <h1>Price: ${item.price}</h1>
-                                                    <h1>Quantity: {item.quantity}</h1>
-                                                    <h1>Size: {item.size}</h1>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h1 className="font-bold ">${item.price * item.quantity}.00</h1>
-                                        </div>
-                                    </div>
-                                )
-                            })
-                        }
-
-                    </div>
-                    <div className="border-y-1 border-gray-200 flex justify-between py-5 mt-12">
-                        <h1>SubTotal:</h1>
-                        <h1>${order.total}.00</h1>
-                    </div>
-                    <div className="flex justify-between py-5 font-bold text-xl">
-                        <h1>Total Amount:</h1>
-                        <h1>${order.total}.00</h1>
-                    </div>
-                    <div className="py-6 flex items-end flex-col ">
-                        <h1 className="text-lg font-semibold py-4">Delivery Address</h1>
-                        <div className="text-sm text-gray-600 flex flex-col gap-2">
-                            <h1>{order.userData.firstName} <span>{order.userData.lastName}</span></h1>
-                            <h1>{order.userData.street}</h1>
-                            <h1>{order.userData.city}, <span>{order.userData.state}</span> {order.userData.zipcode}</h1>
-                            <h1>{order.userData.country}</h1>
-                            <h1>Phone: {order.userData.phone}</h1>
-                            <h1>Email: {order.userData.email}</h1>
-                            <button onClick={() => navigate("/all-orders")} className="cursor-pointer bg-black text-white p-2 px-8 mt-8 text-xl">View All Orders</button>
-                        </div>
-                    </div>
-
+                <div className="self-end md:self-center text-lg md:text-xl font-bold">
+                  ${item.price * item.quantity}.00
                 </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Totals */}
+          <div className="mt-8 border-t border-b border-gray-200 py-4 flex flex-col md:flex-row justify-between text-gray-700 text-lg font-medium gap-2">
+            <span>SubTotal:</span>
+            <span>${order.total}.00</span>
+          </div>
+          <div className="flex justify-between font-bold text-xl mt-4">
+            <span>Total Amount:</span>
+            <span>${order.total}.00</span>
+          </div>
+
+          {/* Delivery Address */}
+          <div className="mt-8 flex flex-col md:flex-row justify-between gap-6 md:gap-12">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-lg font-semibold pb-2">Delivery Address</h1>
+              <p className="text-gray-600">{order.userData.firstName} {order.userData.lastName}</p>
+              <p className="text-gray-600">{order.userData.street}</p>
+              <p className="text-gray-600">{order.userData.city}, {order.userData.state} {order.userData.zipcode}</p>
+              <p className="text-gray-600">{order.userData.country}</p>
+              <p className="text-gray-600">Phone: {order.userData.phone}</p>
+              <p className="text-gray-600">Email: {order.userData.email}</p>
             </div>
-        </Wrapper>
-    )
-}
+
+            <div className="flex items-start md:items-end">
+              <button
+                onClick={() => navigate("/all-orders")}
+                className="cursor-pointer bg-black text-white px-6 py-3 text-lg rounded hover:bg-gray-900 transition"
+              >
+                View All Orders
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  );
+};

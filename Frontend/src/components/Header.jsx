@@ -9,10 +9,9 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { setSearchInput } from "../redux/productSlice.js";
 import { useLocation } from "react-router-dom";
-import {logout} from "../redux/authSlice.js"
+import { logout } from "../redux/authSlice.js"
 
 export const Header = () => {
-
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [searchText, setSearchText] = useState("");
@@ -22,17 +21,17 @@ export const Header = () => {
     );
 
     const [open, setOpen] = useState(false)
+    const [mobileMenu, setMobileMenu] = useState(false)
 
     const { isAuthenticated } = useSelector(state => state.auth)
+
     const handleLogout = async () => {
         try {
             await fetch("http://localhost:3200/api/v1/users/logout", {
                 method: "DELETE",
                 credentials: "include",
             });
-
             dispatch(logout());
-         
             navigate("/login");
         } catch (error) {
             console.error("Logout failed", error);
@@ -54,74 +53,114 @@ export const Header = () => {
         dispatch(setSearchInput(searchText))
     }
 
-
     return (
         <Wrapper>
-            <div className=" flex justify-between items-center py-8">
-                <div className="">
-                    <h1 className="flex items-center text-3xl font-semibold"><TbHexagonLetterKFilled /> <span>Kina's Store</span></h1>
+            {/* Header Container */}
+            <div className="flex items-center justify-between py-3 px-2 md:py-5 px-4 md:px-0 border-b border-gray-200">
+
+                {/* Logo */}
+                <div className="flex items-center text-2xl md:text-3xl font-semibold gap-2 flex-shrink-0">
+                    <TbHexagonLetterKFilled />
+                    <span>Kina's Store</span>
                 </div>
-                <div className="flex gap-6 cursor-pointer">
+
+                {/* Navigation (Desktop) */}
+                <div className="hidden md:flex gap-6 font-medium">
                     <NavLink className={({ isActive }) => isActive ? "underline" : ""} to="/">Home</NavLink>
                     <NavLink className={({ isActive }) => isActive ? "underline" : ""} to="/collection">Collection</NavLink>
                     <NavLink className={({ isActive }) => isActive ? "underline" : ""} to="/about">About</NavLink>
                     <NavLink className={({ isActive }) => isActive ? "underline" : ""} to="/contact">Contact</NavLink>
                 </div>
-                <div className="flex gap-4 items-center">
-                    <div className="border border-gray-400 flex items-center p-1 rounded-sm">
+
+                {/* Search + Icons */}
+                <div className="flex items-center gap-4 md:gap-6 flex-1 md:flex-none justify-end">
+
+                    {/* Search Bar (Desktop) */}
+                    <div className="hidden md:flex flex-1 max-w-md border border-gray-300 rounded overflow-hidden">
                         <input
                             value={searchText}
                             onChange={handleSearch}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    handleSearchBtn();
-                                }
-                            }}
-
-                            className="outline-none" placeholder="Search Here..." />
+                            onKeyDown={(e) => { if (e.key === "Enter") handleSearchBtn(); }}
+                            placeholder="Search Here..."
+                            className="flex-1 px-3 py-2 text-sm md:text-base outline-none"
+                        />
                         <button
                             onClick={handleSearchBtn}
-                        >< CiSearch className="text-2xl cursor-pointer" /></button>
+                            className="px-3 border-l border-gray-300"
+                        >
+                            <CiSearch className="text-xl md:text-2xl" />
+                        </button>
                     </div>
-                    <div className="relative p-2"
-                        onMouseEnter={() => isAuthenticated && setOpen(true)}
-                        onMouseLeave={() => setOpen(false)}
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        onClick={() => setMobileMenu(!mobileMenu)}
+                        className="md:hidden text-2xl focus:outline-none"
                     >
-                        <button
-                            onClick={() => { if (!isAuthenticated) navigate("/login") }}
-                            className="text-2xl cursor-pointer"><CgProfile /></button>
+                        &#9776;
+                    </button>
 
-                        {
-                            isAuthenticated && open
-                            &&
-                            (
-                                <div className="absolute right-0 top-8 w-40 bg-white border shadow-md rounded">
-                                    <button
-                                        onClick={() => navigate("/profile")}
-                                        className="cursor-pointer block w-full px-4 py-2 hover:bg-gray-100 text-left"
-                                    >
-                                        My Profile
-                                    </button>
+                    {/* Profile Dropdown */}
+                    <div
+                    onMouseLeave={() => setOpen(false)}
+                     className="relative flex items-center">
+                            <button
+                                onClick={() => { if (!isAuthenticated) navigate("/login") }}
+                                onMouseEnter={() => isAuthenticated && setOpen(true)}
+                               
+                                className="p-2 text-2xl md:text-3xl flex items-center justify-center"
+                            >
+                                <CgProfile />
+                            </button>
 
-                                    <button
-                                        onClick={() => navigate("/all-orders")}
-                                        className="cursor-pointer block w-full px-4 py-2 hover:bg-gray-100 text-left"
-                                    >
-                                        Orders
-                                    </button>
-
-                                    <button
-                                        onClick={handleLogout}
-                                        className="cursor-pointer block w-full px-4 py-2 hover:bg-gray-100 text-left text-red-600"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            )}
+                        {isAuthenticated && open && (
+                            <div className="absolute right-0 top-9 w-36 md:w-40 bg-white border shadow-md rounded z-50">
+                                <button onClick={() => navigate("/profile")} className="block w-full px-4 py-2 hover:bg-gray-100 text-left">My Profile</button>
+                                <button onClick={() => navigate("/all-orders")} className="block w-full px-4 py-2 hover:bg-gray-100 text-left">Orders</button>
+                                <button onClick={handleLogout} className="block w-full px-4 py-2 hover:bg-gray-100 text-left text-red-600">Logout</button>
+                            </div>
+                        )}
                     </div>
-                    <NavLink className="text-2xl cursor-pointer flex" to="/cart"><FaShoppingCart /><span className="bg-black text-white rounded-full h-5 w-5 text-sm text-center ">{cartCount}</span></NavLink>
+
+                    {/* Cart */}
+                    <NavLink className="relative text-2xl md:text-3xl flex items-center justify-center" to="/cart">
+                        <FaShoppingCart />
+                        {cartCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-black text-white rounded-full h-5 w-5 text-xs flex items-center justify-center">
+                                {cartCount}
+                            </span>
+                        )}
+                    </NavLink>
                 </div>
             </div>
+
+            {/* Mobile Menu */}
+            {mobileMenu && (
+                <div className="md:hidden flex flex-col gap-3 px-4 py-3 border-b border-gray-200">
+                    {/* Mobile Search */}
+                    <div className="flex w-full mb-2">
+                        <input
+                            value={searchText}
+                            onChange={handleSearch}
+                            onKeyDown={(e) => { if (e.key === "Enter") handleSearchBtn(); }}
+                            placeholder="Search Here..."
+                            className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-l outline-none"
+                        />
+                        <button
+                            onClick={handleSearchBtn}
+                            className="px-3 border border-gray-300 border-l-0 rounded-r"
+                        >
+                            <CiSearch className="text-xl" />
+                        </button>
+                    </div>
+
+                    {/* Mobile Navigation */}
+                    <NavLink className="block py-2" to="/">Home</NavLink>
+                    <NavLink className="block py-2" to="/collection">Collection</NavLink>
+                    <NavLink className="block py-2" to="/about">About</NavLink>
+                    <NavLink className="block py-2" to="/contact">Contact</NavLink>
+                </div>
+            )}
         </Wrapper>
     )
 }
