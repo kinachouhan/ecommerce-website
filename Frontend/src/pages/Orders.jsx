@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllOrdersAdmin , updateOrderStatusAsync } from "../redux/orderSlice";
+import { fetchAllOrdersAdmin, updateOrderStatusAsync } from "../redux/orderSlice";
 import { GrDeliver } from "react-icons/gr";
 
 export const Orders = () => {
@@ -48,8 +48,18 @@ export const Orders = () => {
           <div className="flex flex-col gap-2 items-end">
             <h2 className="font-bold">${order.total}</h2>
             <h3 className="font-bold text-sm">
-              Payment: {order.paymentStatus || order.paymentMethod}
+              Payment:{" "}
+              <span
+                className={
+                  order.paymentStatus === "Completed"
+                    ? "text-green-600"
+                    : "text-orange-500"
+                }
+              >
+                {order.paymentStatus}
+              </span>
             </h3>
+           <h3 className="font-semibold text-gray-800 text-sm">Payment-Mode: {order.paymentMethod}</h3>
 
             <select
               value={order.status}
