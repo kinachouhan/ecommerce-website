@@ -6,10 +6,12 @@ const initialState = {
 }
 
 
+
+
 export const fetchOrders = createAsyncThunk(
     "order/fetchorders",
     async (_, thunkAPI) => {
-        const res = await fetch("http://localhost:3200/api/v1/orders", {
+        const res = await fetch("http://localhost:3200/api/v1/orders/my-orders", {
             method: "GET",
             credentials: "include",
             headers: {
@@ -20,8 +22,26 @@ export const fetchOrders = createAsyncThunk(
         if (data.success) {
             return data.responseData
         }
+        else{
+              throw new Error(data.message)
+        }
     }
 )
+
+export const fetchAllOrdersAdmin = createAsyncThunk(
+    "order/fetchAllOrdersAdmin",
+    async (_, thunkAPI) => {
+        const res = await fetch("http://localhost:3200/api/v1/orders", {
+            method: "GET",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        return data.responseData;
+    }
+);
 
 export const updateOrderStatusAsync = createAsyncThunk(
     "order/updateStatus",
@@ -89,9 +109,21 @@ const orderSlice = createSlice({
                 const index = state.orders.findIndex(o => o._id === updatedOrder._id);
                 if (index !== -1) {
                     state.orders[index] = updatedOrder;
-                }})
+                }
+            })
             .addCase(placeOrderAsync.fulfilled, (state, action) => {
                 state.orders.unshift(action.payload);
+            })
+            .addCase(fetchAllOrdersAdmin.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchAllOrdersAdmin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.orders = action.payload;
+            })
+            .addCase(fetchAllOrdersAdmin.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
     }
 })

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrders, updateOrderStatusAsync } from "../redux/orderSlice";
+import { fetchAllOrdersAdmin , updateOrderStatusAsync } from "../redux/orderSlice";
 import { GrDeliver } from "react-icons/gr";
 
 export const Orders = () => {
@@ -8,7 +8,7 @@ export const Orders = () => {
   const { orders, loading } = useSelector((state) => state.order);
 
   useEffect(() => {
-    dispatch(fetchOrders());
+    dispatch(fetchAllOrdersAdmin());
   }, [dispatch]);
 
   if (loading) return <h1>Loading Orders...</h1>;
@@ -29,7 +29,7 @@ export const Orders = () => {
             <GrDeliver className="text-7xl text-gray-700 border p-2" />
             <div>
               {order.items.map((item) => (
-                <h2 key={item.productId} className="font-semibold">
+                <h2 key={`${order._id}-${item.productId}`} className="font-semibold">
                   {item.productName}
                 </h2>
               ))}

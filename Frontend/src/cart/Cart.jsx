@@ -36,7 +36,7 @@ export const Cart = () => {
                     {
                         items.map((item) => {
                             return (
-                                <div key={item._id} className="flex justify-between">
+                                <div  key={`${item.product._id}-${item.size}`} className="flex justify-between">
                                     <div className="flex gap-10">
                                         <img className="h-[100px] w-[100px]" src={item.product.images[0]} />
                                         <div className="flex flex-col gap-2">

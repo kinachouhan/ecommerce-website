@@ -1,6 +1,6 @@
 import express from "express"
 import {signUp} from "../controolers/userController.js"
-import {login , logout , getMe , profile} from "../controolers/userController.js"
+import {login , logout , getMe , updateUserProfile} from "../controolers/userController.js"
 import { authMiddleware } from "../middleware/authMiddleware.js"
 
 
@@ -10,7 +10,7 @@ router.post("/signup" , signUp)
 router.post("/login" , login)
 router.delete("/logout" , logout)
 router.get("/me", getMe)
-router.put("/profile" ,authMiddleware , profile)
+router.put("/profile", authMiddleware, updateUserProfile);
 router.put("/orders/:orderId/status", (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;

@@ -168,34 +168,42 @@ export const getMe = async (req, res) => {
 };
 
 
-export const profile = async (req, res) => {
-    try {
-        const userId = req.user.id
-        const { address } = req.body
 
-        if (!address) {
-            return res.status(400).json({
-                success: false,
-                message: "Full address is required"
-            })
-        }
+export const updateUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id; // 🔥 logged-in user
+    const { address } = req.body;
 
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { address },
-            { new: true }
-        ).select("-password")
-
-        res.status(200).json({
-            success: true,
-            responseData: updatedUser
-        })
-
+    if (!address) {
+      return res.status(400).json({
+        success: false,
+        message: "Address is required",
+      });
     }
-    catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: "Something went wrong"
-        })
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,                    // ✅ ONLY THIS USER
+      { address },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-}
+
+    res.status(200).json({
+      success: true,
+      responseData: {
+        address: updatedUser.address,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
+    });
+  }
+};

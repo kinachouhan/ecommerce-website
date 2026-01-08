@@ -260,6 +260,7 @@ export const SingleProductDetails = () => {
 
                             {reviews.map(r => (
                                 <div key={r._id} className="py-4">
+                                    {console.log(r)}
                                     <div className="flex gap-4 py-2 items-center">
                                         <div className="flex gap-1">
                                             {[1, 2, 3, 4, 5].map((star) => (

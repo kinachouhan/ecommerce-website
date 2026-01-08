@@ -5,10 +5,10 @@ import {placeOrder , getUserOrders , getAllOrders , updateOrderStatus} from "../
 
 const router = express.Router()
 
-router.post("/", placeOrder)
+router.post("/",authMiddleware,  placeOrder)
 router.put("/:orderId/status", authMiddleware , updateOrderStatus)
 router.get("/", authMiddleware, getAllOrders)
-router.get("/my-orders/:userId", getUserOrders)
+router.get("/my-orders", authMiddleware , getUserOrders)
 
 
 export default router
