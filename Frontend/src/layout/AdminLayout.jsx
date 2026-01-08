@@ -43,13 +43,18 @@ export const AdminLayout = () => {
   return (
     <>
       <AdminHeader />
-      <div className="flex min-h-screen">
-        <aside>
+
+      <div className="flex flex-col lg:flex-row min-h-screen">
+        <aside className="h-full lg:min-h-screen border-r border-black/20">
           <AdminSideBar />
         </aside>
-        <main className="flex-1 p-8">
-          <Outlet />
+
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full">
+          <div className="w-full lg:max-w-[1100px]">
+            <Outlet />
+          </div>
         </main>
+
       </div>
     </>
   );

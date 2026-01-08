@@ -27,52 +27,58 @@ export const AdminListItems = () => {
 
     return (
         <>
-            {loading ?
-                <p>Loading...</p>
-                :
-                <div className="p-6">
-                    <h1 className="text-xl font-semibold mb-4">All Products</h1>
+  {loading ? (
+    <p className="text-center mt-10 text-lg">Loading...</p>
+  ) : (
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl font-semibold mb-6">All Products</h1>
 
-                    {
-                        products.length === 0
-                            ?
-                            <div>
-                                No Products found.
-                            </div>
-                            :
-                            <div className="flex flex-col gap-2">
-                                <div className="grid grid-cols-5 bg-gray-100 text-center font-medium border border-gray-300 rounded-sm overflow-hidden">
-                                    <div className="p-2">Image</div>
-                                    <div className="p-2">Name</div>
-                                    <div className="p-2">Category</div>
-                                    <div className="p-2">Price</div>
-                                    <div className="p-2">Action</div>
-                                </div>
-                                {
-                                    products.map((product) => {
-                                        return (
-                                                <div key={product._id} className="grid grid-cols-5 text-center items-center justify-center px-2 pb-4 border border-gray-300 rounded-sm overflow-hidden">
+      {products.length === 0 ? (
+        <div className="text-center text-gray-500">No Products found.</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {products.map((product) => (
+            <div
+              key={product._id}
+              className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow py-4 flex flex-col items-center text-center"
+            >
+              {/* Product Image */}
+              <img
+                className="h-40 w-50 object-cover rounded-md mb-4"
+                src={product.images[0]}
+                alt={product.productName}
+              />
 
-                                                    <div className="flex justify-center">
-                                                        <img
-                                                            className="h-20 w-20 object-cover"
-                                                            src={product.images[0]}
-                                                        />
-                                                    </div>
-                                                    <div>{product.productName}</div>
-                                                    <div>{product.category}</div>
-                                                    <div>${product.price}</div>
-                                                    <button onClick={()=>handleDelete(product._id)}className="text-red-500 font-bold cursor-pointer">X</button>
-                                                </div>
-                                         
-                                        )
-                                    })
-                                }
-                            </div>
-                    }
-                </div>
-            }
+              {/* Product Info */}
+              <div className="mb-2 flex gap-1">
+                <span className="font-semibold">Name: </span>
+                <p className="text-gray-700">{product.productName}</p>
+              </div>
 
-        </>
+              <div className="mb-2 flex gap-1">
+                <span className="font-semibold">Category:</span>
+                <p className="text-gray-700">{product.category}</p>
+              </div>
+
+              <div className="mb-4 flex gap-1">
+                <span className="font-semibold">Price:</span>
+                <p className="text-gray-700">${product.price}</p>
+              </div>
+
+              {/* Action Button */}
+              <button
+                onClick={() => handleDelete(product._id)}
+                className="text-white bg-red-500 hover:bg-red-600 font-semibold px-4 py-1 rounded-md transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )}
+</>
+
     );
 };
