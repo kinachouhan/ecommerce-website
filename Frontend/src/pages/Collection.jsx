@@ -226,7 +226,7 @@ export const Collection = () => {
                         </select>
 
                     </div>
-                    <div className="pb-10">
+                    <div className="pb-40">
                         {sortedProducts.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {sortedProducts.map(product => (
