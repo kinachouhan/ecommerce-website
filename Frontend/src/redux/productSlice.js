@@ -21,7 +21,22 @@ export const fetchProducts = createAsyncThunk(
     }
 )
 
+export const deleteProduct = createAsyncThunk(
+    "product/deleteProduct",
+    async (id) => {
+        const res = await fetch(
+            `http://localhost:3200/api/v1/products/delete/${id}`,
+            { method: "DELETE" }
+        );
+        const data = await res.json();
 
+        if (!data.success) {
+            throw new Error("Delete failed");
+        }
+
+        return id;
+    }
+);
 
 const productSlice = createSlice({
     name: "product",
@@ -47,8 +62,13 @@ const productSlice = createSlice({
             state.loading = false,
                 state.error = action.payload || "something went wrong"
         })
+        builder.addCase(deleteProduct.fulfilled, (state, action) => {
+            state.products = state.products.filter(
+                (p) => p._id !== action.payload
+            )
+        })
     }
 })
 
-export const {setSearchInput , clearSearchInput} = productSlice.actions
+export const { setSearchInput, clearSearchInput } = productSlice.actions
 export default productSlice.reducer

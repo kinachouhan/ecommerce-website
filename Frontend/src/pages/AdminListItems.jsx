@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useEffect } from "react"
-import { fetchProducts } from "../redux/productSlice.js"
+import { fetchProducts, deleteProduct } from "../redux/productSlice.js"
 import toast from "react-hot-toast"
 
 
@@ -15,19 +15,15 @@ export const AdminListItems = () => {
         dispatch(fetchProducts())
     }, [dispatch])
   
-    const handleDelete = async(id)=>{
-         const res = await fetch (`http://localhost:3200/api/v1/products/delete/${id}`,{
-             method: "DELETE"
-         })
 
-         const data = await res.json()
-
-         if(data.success){
-             return toast.success("Product deleted successfully")
-         }else{
-            return toast.error("please try again")
-         }    
+    const handleDelete = async (id) => {
+    try {
+      await dispatch(deleteProduct(id)).unwrap();
+      toast.success("Product deleted successfully");
+    } catch (err) {
+      toast.error("Please try again");
     }
+  };
 
     return (
         <>

@@ -70,7 +70,13 @@ export const Signup = () => {
                         <div className="flex flex-col gap-4 w-[100%]">
                             <input onChange={handleChange} name="name" value={userDetails.name} className="border border-gray-700 p-2 rounded-sm outline-none" placeholder="Enter Name" type="text" />
                             <input onChange={handleChange} name="email" value={userDetails.email} className="border border-gray-700 p-2 rounded-sm outline-none" placeholder="Enter Email" type="email" />
-                            <input onChange={handleChange} name="password" value={userDetails.password} className="border border-gray-700 p-2 rounded-sm outline-none" placeholder="Enter Password" type="password" />
+                            <input 
+                             onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        handleSignup();
+                                    }
+                                }}
+                            onChange={handleChange} name="password" value={userDetails.password} className="border border-gray-700 p-2 rounded-sm outline-none" placeholder="Enter Password" type="password" />
 
                         </div>
                         <div className="flex justify-between py-1 text-sm">
