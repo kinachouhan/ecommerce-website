@@ -45,10 +45,12 @@ export const signUp = async (req, res) => {
 
         return res
             .cookie("token", token, {
+
                 httpOnly: true,
-                secure: false,
-                sameSite: "lax",
-                maxAge: 7 * 24 * 60 * 60 * 1000
+                secure: true,          // ✅ REQUIRED on HTTPS
+                sameSite: "none",      // ✅ REQUIRED for cross-origin
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+
             })
             .status(200).json({
                 success: true,
@@ -108,9 +110,9 @@ export const login = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000
+            secure: true,          // ✅ REQUIRED on HTTPS
+            sameSite: "none",      // ✅ REQUIRED for cross-origin
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         })
 
 
@@ -159,9 +161,10 @@ export const getMe = async (req, res) => {
 
         if (!user) return res.status(404).json({ success: false, message: "User not found" });
 
-        return res.status(200).json({ 
-            success: true, 
-            responseData: user });
+        return res.status(200).json({
+            success: true,
+            responseData: user
+        });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Invalid token" });
     }
@@ -170,40 +173,40 @@ export const getMe = async (req, res) => {
 
 
 export const updateUserProfile = async (req, res) => {
-  try {
-    const userId = req.user._id; // 🔥 logged-in user
-    const { address } = req.body;
+    try {
+        const userId = req.user._id; // 🔥 logged-in user
+        const { address } = req.body;
 
-    if (!address) {
-      return res.status(400).json({
-        success: false,
-        message: "Address is required",
-      });
+        if (!address) {
+            return res.status(400).json({
+                success: false,
+                message: "Address is required",
+            });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,                    // ✅ ONLY THIS USER
+            { address },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            responseData: {
+                address: updatedUser.address,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to update profile",
+        });
     }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,                    // ✅ ONLY THIS USER
-      { address },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      responseData: {
-        address: updatedUser.address,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to update profile",
-    });
-  }
 };
