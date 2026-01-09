@@ -2,11 +2,11 @@ import { TbHexagonLetterKFilled } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
 export const AdminHeader = () => {
-
+     const API = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        await fetch("http://localhost:3200/api/v1/users/logout", {
+        await fetch(`${API}/api/v1/users/logout`, {
             method: "DELETE",
             credentials: "include",
         });

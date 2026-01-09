@@ -12,6 +12,8 @@ import { useLocation } from "react-router-dom";
 import { logout } from "../redux/authSlice.js"
 
 export const Header = () => {
+
+    const API = import.meta.env.VITE_API_URL;
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [searchText, setSearchText] = useState("");
@@ -27,7 +29,7 @@ export const Header = () => {
 
     const handleLogout = async () => {
         try {
-            await fetch("http://localhost:3200/api/v1/users/logout", {
+            await fetch(`${API}/api/v1/users/logout`, {
                 method: "DELETE",
                 credentials: "include",
             });

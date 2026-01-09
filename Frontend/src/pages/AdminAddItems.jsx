@@ -6,7 +6,7 @@ import { useEffect } from "react"
 
 export const AdminAddItems = () => {
 
-
+    const API = import.meta.env.VITE_API_URL;
     const sizes = ["S", "M", "L", "XL", "XXL"];
     const [loading, setLoading] = useState(false);
     const [selectedSizes, setSelectedSizes] = useState([])
@@ -85,7 +85,7 @@ export const AdminAddItems = () => {
 
         setLoading(true);
 
-        const res = await fetch("http://localhost:3200/api/v1/products/add", {
+        const res = await fetch(`${API}/api/v1/products/add`, {
             method: "POST",
             body: formData,
         });

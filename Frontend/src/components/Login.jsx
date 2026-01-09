@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../redux/cartSlice.js";
 
 export const Login = () => {
+
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -38,7 +40,7 @@ export const Login = () => {
       return;
     }
 
-    const res = await fetch("http://localhost:3200/api/v1/users/login", {
+    const res = await fetch(`${API}/api/v1/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

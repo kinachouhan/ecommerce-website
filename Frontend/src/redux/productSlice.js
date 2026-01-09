@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+const API = import.meta.env.VITE_API_URL;
 
 
 const initialState = {
@@ -12,7 +13,7 @@ const initialState = {
 export const fetchProducts = createAsyncThunk(
     "product/fetchproducts",
     async () => {
-        const res = await fetch("http://localhost:3200/api/v1/products/get")
+        const res = await fetch(`${API}/api/v1/products/get`)
         const data = await res.json()
         console.log(data)
         if (data.success) {
@@ -25,7 +26,7 @@ export const deleteProduct = createAsyncThunk(
     "product/deleteProduct",
     async (id) => {
         const res = await fetch(
-            `http://localhost:3200/api/v1/products/delete/${id}`,
+            `${API}/api/v1/products/delete/${id}`,
             { method: "DELETE" }
         );
         const data = await res.json();

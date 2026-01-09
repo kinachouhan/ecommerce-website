@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+const API = import.meta.env.VITE_API_URL;
 
 const initialState = {
     reviews: [],
@@ -13,7 +14,7 @@ export const checkCanReview = createAsyncThunk(
     "review/checkCanReview",
     async (productId) => {
         const res = await fetch(
-            `http://localhost:3200/api/v1/reviews/can-review/${productId}`,
+            `${API}/api/v1/reviews/can-review/${productId}`,
             { credentials: "include" }
         );
         const data = await res.json();
@@ -25,7 +26,7 @@ export const fetchProductReviews = createAsyncThunk(
     "review/fetchProductReviews",
     async (productId) => {
         const res = await fetch(
-            `http://localhost:3200/api/v1/reviews/${productId}`
+            `${API}/api/v1/reviews/${productId}`
         );
         return await res.json();
     }
@@ -35,7 +36,7 @@ export const fetchUserReview = createAsyncThunk(
     "review/fetchUserReview",
     async (productId) => {
         const res = await fetch(
-            `http://localhost:3200/api/v1/reviews/user/${productId}`,
+            `${API}/api/v1/reviews/user/${productId}`,
             { credentials: "include" }
         );
         const data = await res.json();
@@ -47,7 +48,7 @@ export const submitReview = createAsyncThunk(
     "review/submitReview",
     async ({ productId, rating, comment }, { rejectWithValue }) => {
        try{ const res = await fetch(
-            "http://localhost:3200/api/v1/reviews",
+            `${API}/api/v1/reviews`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

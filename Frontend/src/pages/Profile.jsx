@@ -8,7 +8,7 @@ export const Profile = () => {
 
     const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch()
-
+   const API = import.meta.env.VITE_API_URL;
     const [userData, setUserData] = useState({
         firstName: "",
         lastName: "",
@@ -36,7 +36,7 @@ export const Profile = () => {
     }, [user]);
 
     const saveProfile = async () => {
-        const res = await fetch("http://localhost:3200/api/v1/users/profile", {
+        const res = await fetch(`${API}/api/v1/users/profile`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

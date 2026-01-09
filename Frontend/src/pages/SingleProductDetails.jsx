@@ -15,7 +15,10 @@ import {
 } from "../redux/reviewSlice.js";
 import ReviewTab from "../pages/ReviewTab.jsx";
 
+
 export const SingleProductDetails = () => {
+
+    const API = import.meta.env.VITE_API_URL;
 
     const { products } = useSelector(state => state.product);
     const [selectedSize, setSelectedSize] = useState(null);
@@ -53,7 +56,7 @@ export const SingleProductDetails = () => {
     }, [activeTab, id, isAuthenticated, dispatch]);
 
     const fetchData = async () => {
-        const res = await fetch(`http://localhost:3200/api/v1/products/product/${id}`);
+        const res = await fetch(`${API}/api/v1/products/product/${id}`);
         const data = await res.json();
         if (data.success) {
             setProduct(data.responseData);

@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const Signup = () => {
+
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({
     name: "",
@@ -26,7 +28,7 @@ export const Signup = () => {
       return;
     }
 
-    const res = await fetch("http://localhost:3200/api/v1/users/signup", {
+    const res = await fetch(`${API}/api/v1/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentails: "include",

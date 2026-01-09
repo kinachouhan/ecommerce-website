@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+const API = import.meta.env.VITE_API_URL;
 
 const initialState = {
     userData: null,
@@ -11,7 +12,7 @@ const initialState = {
 export const fetchOrders = createAsyncThunk(
     "order/fetchorders",
     async (_, thunkAPI) => {
-        const res = await fetch("http://localhost:3200/api/v1/orders/my-orders", {
+        const res = await fetch(`${API}/api/v1/orders/my-orders`, {
             method: "GET",
             credentials: "include",
             headers: {
@@ -31,7 +32,7 @@ export const fetchOrders = createAsyncThunk(
 export const fetchAllOrdersAdmin = createAsyncThunk(
     "order/fetchAllOrdersAdmin",
     async (_, thunkAPI) => {
-        const res = await fetch("http://localhost:3200/api/v1/orders", {
+        const res = await fetch(`${API}/api/v1/orders`, {
             method: "GET",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
@@ -46,7 +47,7 @@ export const fetchAllOrdersAdmin = createAsyncThunk(
 export const updateOrderStatusAsync = createAsyncThunk(
     "order/updateStatus",
     async ({ orderId, status }, thunkAPI) => {
-        const res = await fetch(`http://localhost:3200/api/v1/orders/${orderId}/status`, {
+        const res = await fetch(`${API}/api/v1/orders/${orderId}/status`, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -64,7 +65,7 @@ export const updateOrderStatusAsync = createAsyncThunk(
 export const placeOrderAsync = createAsyncThunk(
     "order/placeOrder",
     async (orderData) => {
-        const res = await fetch("http://localhost:3200/api/v1/orders", {
+        const res = await fetch(`${API}/api/v1/orders`, {
             method: "POST",
             credentials: "include",
             headers: {

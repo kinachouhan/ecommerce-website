@@ -5,13 +5,15 @@ import { AdminSideBar } from "../components/AdminSideBar";
 import { useEffect, useState } from "react";
 
 export const AdminLayout = () => {
+
+  const API = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const res = await fetch("http://localhost:3200/api/v1/admin/dashboard", {
+        const res = await fetch(`${API}/api/v1/admin/dashboard`, {
           method: "GET",
           credentials: "include", // send cookies
           headers: { "Content-Type": "application/json" },

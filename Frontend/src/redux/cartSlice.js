@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+const API = import.meta.env.VITE_API_URL;
 
 const initialState = {
     items: [],
@@ -11,7 +12,7 @@ export const fetchCart = createAsyncThunk(
     "cart/fetchCart",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await fetch("http://localhost:3200/api/v1/cart", {
+            const res = await fetch(`${API}/api/v1/cart`, {
                 credentials: "include",
             });
             const data = await res.json();
@@ -28,7 +29,7 @@ export const addToCart = createAsyncThunk(
     "cart/addToCart",
     async ({ productId, size, quantity = 1 }, { rejectWithValue, dispatch }) => {
         try {
-            const res = await fetch("http://localhost:3200/api/v1/cart/add", {
+            const res = await fetch(`${API}/api/v1/cart/add`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -52,7 +53,7 @@ export const removeFromCart = createAsyncThunk(
     "cart/removeFromCart",
     async ({ productId, size }, { rejectWithValue, dispatch }) => {
         try {
-            const res = await fetch("http://localhost:3200/api/v1/cart/remove", {
+            const res = await fetch(`${API}/api/v1/cart/remove`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -75,7 +76,7 @@ export const clearCart = createAsyncThunk(
     "cart/clearCart",
     async (_, { dispatch, rejectWithValue }) => {
         try {
-            const res = await fetch("http://localhost:3200/api/v1/cart/clear", {
+            const res = await fetch(`${API}/api/v1/cart/clear`, {
                 method: "DELETE",
                 credentials: "include",
             });
