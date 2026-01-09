@@ -9,7 +9,6 @@ import { Signup } from './components/Signup';
 import { Cart } from './cart/Cart';
 import { MainLayout } from './layout/MainLayout';
 import { AdminLayout } from './layout/AdminLayout';
-
 import { AdminAddItems } from './pages/AdminAddItems';
 import { AdminListItems } from './pages/AdminListItems';
 import { Orders } from './pages/Orders';
@@ -18,7 +17,7 @@ import { SingleProductDetails } from './pages/SingleProductDetails';
 import { Checkout } from './pages/Checkout';
 import { SuccessOrder } from './pages/SuccessOrder';
 import { AllOrders } from './pages/AllOrders';
-import { Profile } from './pages/profile';
+import { Profile } from './pages/Profile';
 import {useDispatch} from "react-redux"
 import {setUser} from "./redux/authSlice.js"
 import {useEffect} from "react"
