@@ -26,7 +26,8 @@ app.use(cookieParser())
 app.use(cors({
     origin: [
          "http://localhost:5173",
-         "https://kinas-clothing-store.netlify.app/"
+         "https://kinas-clothing-store.netlify.app"
+         
     ],
   credentials: true,
 }))
