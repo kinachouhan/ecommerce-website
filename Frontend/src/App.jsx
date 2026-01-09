@@ -25,11 +25,12 @@ import {useEffect} from "react"
 function App() {
 
   const dispatch = useDispatch();
+ const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:3200/api/v1/users/me", {
+        const res = await fetch(`${API}/api/v1/users/me`, {
           credentials: "include" 
         });
         const data = await res.json();
