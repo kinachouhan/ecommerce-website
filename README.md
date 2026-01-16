@@ -1,6 +1,6 @@
-🛍️ Kinas Clothing Store
+🛍️ K Crown Clothing Store
 
-Kinas Clothing Store is a full-stack e-commerce web application designed to provide a seamless shopping experience for customers and an efficient management system for administrators. The application uses a single frontend with secure backend APIs, implementing authentication and authorization to protect user data and restrict access to admin features.
+K Crown Clothing Store is a full-stack e-commerce web application designed to provide a seamless shopping experience for customers and an efficient management system for administrators. The application uses a single frontend with secure backend APIs, implementing authentication and authorization to protect user data and restrict access to admin features.
 
 👤 User Features
 
