@@ -24,7 +24,7 @@ export const About = () => {
                     {/* Text */}
                     <div className="w-full md:w-1/2 flex flex-col gap-6 text-sm sm:text-base">
                         <p>
-                            Kina's Store was born out of a passion for innovation and a desire to revolutionize the way people experience quality, trust, and value. From the very beginning, our mission has been to create products that blend cutting-edge technology with thoughtful design, delivering solutions that stand the test of time.
+                            K Crown was born out of a passion for innovation and a desire to revolutionize the way people experience quality, trust, and value. From the very beginning, our mission has been to create products that blend cutting-edge technology with thoughtful design, delivering solutions that stand the test of time.
                         </p>
                         <p>
                             Since our inception, we've worked tirelessly to curate a diverse selection of products that meet the highest standards of quality and reliability. Every item we offer is carefully chosen to ensure it delivers exceptional performance and lasting value.

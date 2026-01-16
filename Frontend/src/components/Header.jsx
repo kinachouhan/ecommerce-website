@@ -63,7 +63,7 @@ export const Header = () => {
                 {/* Logo */}
                 <div className="flex items-center text-2xl md:text-3xl font-semibold gap-2 flex-shrink-0">
                     <TbHexagonLetterKFilled />
-                    <span>Kina's Store</span>
+                    <span>Crown</span>
                 </div>
 
                 {/* Navigation (Desktop) */}

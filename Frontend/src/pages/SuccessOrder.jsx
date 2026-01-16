@@ -17,7 +17,7 @@ export const SuccessOrder = () => {
         {/* Thank You Section */}
         <div className="flex flex-col justify-center items-center gap-4 py-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold">
-            Thanks for shopping with <span className="text-black">Kina's Store!</span>
+            Thanks for shopping with <span className="text-black">K Crown!</span>
           </h1>
           <p className="text-lg text-gray-500 font-semibold">
             Your order has been placed successfully

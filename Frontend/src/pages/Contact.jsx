@@ -32,11 +32,11 @@ export const Contact = () => {
                         </p>
                         <p>
                             Tel: 0000000000 <br />
-                            Email: contact@kina'sstore.com
+                            Email: contact@crown.com
                         </p>
 
                         <h1 className="text-xl sm:text-2xl text-gray-800 font-bold">
-                            Careers at Kina's Store
+                            Careers at K Crown
                         </h1>
                         <p>Learn more about our teams and job openings.</p>
 

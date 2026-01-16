@@ -20,7 +20,7 @@ export const AdminHeader = () => {
                 <div className="">
                     <h1 className="flex items-center text-xl sm:text-3xl font-semibold">
                         <TbHexagonLetterKFilled />
-                        <span className="ml-1">Kina's Store</span>
+                        <span className="ml-1">Crown</span>
                     </h1>
                     <h1 className="text-gray-700 text-xs sm:text-base">
                         ADMIN PANEL
